@@ -1,0 +1,27 @@
+.npmcache
+.idea
+.sw?
+!jest.config.js
+*.d.ts
+
+# config
+*.config.json
+
+# nodeSJ
+node_modules
+
+#Type Script
+dist/
+
+#Jest
+coverage/
+
+# Amazon CDK
+cdk.out
+.cdk.staging
+
+# VSCode
+.vscode/*
+
+# Mac
+.ds_store
