@@ -1,31 +1,23 @@
 {
-	"name": "@notification-api/manage",
-	"description": "Notification Management API Javascript client library",
+	"name": "@notifications-client/manage",
+	"description": "Notifications Management API Javascript client library",
 	"license": "BSD-3-Clause",
 	"version": "0.0.1",
-
 	"publishConfig": {
 		"access": "public"
 	},
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/netradius/notifications-client-js"
-	},
-
 	"files": [
 		"lib"
 	],
-
 	"main": "./lib/index.js",
 	"type": "commonjs",
-
 	"scripts": {
 		"prebuild": "rm -rf lib",
-		"build": "tsc"
+		"build": "npx tsc -b"
 	},
-
 	"dependencies": {
-		"node-fetch": "^2.6.7"
+		"node-fetch": "^2.6.7",
+		"uuid": "^9.0.0"
 	},
 	"devDependencies": {
 		"@types/node": "^16.11.36",

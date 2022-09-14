@@ -1,15 +1,11 @@
 {
-	"name": "@notification-api/message",
+	"name": "@notifications-client/message",
 	"description": "Notification Message API Javascript client library",
 	"license": "BSD-3-Clause",
 	"version": "0.0.1",
 
 	"publishConfig": {
 		"access": "public"
-	},
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/netradius/notification-message-client"
 	},
 
 	"files": [
@@ -21,7 +17,7 @@
 
 	"scripts": {
 		"prebuild": "rm -rf lib",
-		"build": "tsc"
+		"build": "npx tsc -b"
 	},
 
 	"dependencies": {

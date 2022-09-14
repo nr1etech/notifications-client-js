@@ -12,6 +12,7 @@ node_modules
 
 #Type Script
 dist/
+tsconfig.tsbuildinfo
 
 #Jest
 coverage/

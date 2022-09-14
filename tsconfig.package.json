@@ -7,7 +7,6 @@
 			"DOM"
 		],
 		"moduleResolution": "node",
-		"outDir": "lib",
 		"declaration": true,
 		"strict": true,
 		"noImplicitAny": true,
