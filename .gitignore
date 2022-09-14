@@ -3,7 +3,7 @@
 .sw?
 !jest.config.js
 *.d.ts
-.npmrc
+*.env
 
 # nodeSJ
 node_modules
@@ -26,3 +26,5 @@ cdk.out
 # Mac
 .ds_store
 
+# lerna
+lerna-debug.log

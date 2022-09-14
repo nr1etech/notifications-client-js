@@ -1,7 +1,7 @@
 // **********************
 // Client Types
 
-export interface NotificationManageOptions {
+export interface NotificationsManageClientOptions {
 	authorizationToken: string
 }
 

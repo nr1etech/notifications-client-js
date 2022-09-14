@@ -1,14 +1,14 @@
 import { ArgumentError, AuthorizationError, FetchError, ResponseError } from "./errors";
 import fetch, { Response } from "node-fetch";
 
-export class NotificationMessage {
+export class NotificationsMessageClient {
 	private baseUrl:string;
 	private authorizationToken:string;
 
 	/**
 	 * Notification Messaging service client.
 	 */
-	constructor(baseUrl: string, options: NotificationMessageOptions) {
+	constructor(baseUrl: string, options: NotificationsMessageClientOptions) {
 		baseUrl = baseUrl.slice(-1) === "/" ? baseUrl.slice(0, -1) : baseUrl;	// remove trailing slash
 
 		if (!this.isUrl(baseUrl)) throw new ArgumentError("baseUrl is invalid.");
@@ -119,7 +119,7 @@ export class NotificationMessage {
 export interface SendResponse {
 	MessageID: string,
 }
-export interface NotificationMessageOptions { authorizationToken: string }
+export interface NotificationsMessageClientOptions { authorizationToken: string }
 
 export class EmailRecipient {
 	name: string;

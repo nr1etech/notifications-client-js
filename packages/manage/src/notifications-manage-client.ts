@@ -2,13 +2,13 @@ import * as Errors from "./errors";
 import * as Types from "./types";
 import fetch, { Response } from "node-fetch";
 
-export class NotificationManage {
+export class NotificationsManageClient {
 	private baseUrl:string;
 	private authorizationToken:string;
 	private customerID:string|undefined;
 	private initComplete:boolean = false;
 
-	constructor(baseUrl:string, options:Types.NotificationManageOptions) {
+	constructor(baseUrl:string, options:Types.NotificationsManageClientOptions) {
 		baseUrl = baseUrl.slice(-1) === "/" ? baseUrl.slice(0, -1) : baseUrl;	// remove trailing slash
 
 		if (!this.isUrl(baseUrl)) throw new Errors.ArgumentError("baseUrl is invalid.");

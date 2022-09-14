@@ -1,2 +1,2 @@
 export * from "./errors";
-export * from "./notification-message";
+export * from "./notifications-message-client";

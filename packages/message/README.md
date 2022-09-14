@@ -1,11 +1,20 @@
-# `message`
+# NetRadius Notifications Service Message API Javascript Client
 
-> TODO: description
+
+## Installation
+
+`npm install @netradius/notifications-message-client`
 
 ## Usage
 
-```
-const message = require('message');
+```typescript
+import { NotificationsMessageClient } from "@netradius/notifications-message-client";
 
-// TODO: DEMONSTRATE API
+let baseUrl = "https://api.....";
+
+const manageClient = new NotificationsMessageClient(baseUrl, {
+	authorizationToken: "abcd-1234",
+});
+
+const userInfo = await manageClient.getInfo();
 ```

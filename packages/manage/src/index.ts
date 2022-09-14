@@ -1,3 +1,3 @@
 export * from "./errors";
 export * from "./types";
-export * from "./notification-manage";
+export * from "./notifications-manage-client";

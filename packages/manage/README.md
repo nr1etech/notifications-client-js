@@ -1,11 +1,20 @@
-# `manage`
+# NetRadius Notifications Service Manage API Javascript Client
 
-> TODO: description
+
+## Installation
+
+`npm install @netradius/notifications-manage-client`
 
 ## Usage
 
-```
-const manage = require('manage');
+```typescript
+import { NotificationsManageClient } from "@netradius/notifications-manage-client";
 
-// TODO: DEMONSTRATE API
+let baseUrl = "https://api.....";
+
+const manageClient = new NotificationsManageClient(baseUrl, {
+	authorizationToken: "abcd-1234",
+});
+
+const userInfo = await manageClient.getInfo();
 ```
