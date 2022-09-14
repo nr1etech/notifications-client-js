@@ -1,23 +1,31 @@
 {
 	"name": "@notifications-client/manage",
-	"description": "Notifications Management API Javascript client library",
-	"license": "BSD-3-Clause",
-	"version": "0.0.1",
 	"publishConfig": {
 		"access": "public"
+	},
+	"version": "0.0.1",
+	"description": "Notifications Manage API Javascript client",
+	"author": "Jake Roberts <113054933+jroberts-logicl@users.noreply.github.com>",
+	"homepage": "",
+	"license": "BSD-3-Clause",
+	"main": "lib/index.js",
+	"typings": "lib/index.d.ts",
+	"type": "commonjs",
+	"directories": {
+		"lib": "lib"
 	},
 	"files": [
 		"lib"
 	],
-	"main": "./lib/index.js",
-	"type": "commonjs",
+	"repository": {
+		"type": "git",
+		"url": "git@github-logicl:netradius/notifications-client-js.git"
+	},
 	"scripts": {
-		"prebuild": "rm -rf lib",
-		"build": "npx tsc -b"
+		"tsc": "tsc"
 	},
 	"dependencies": {
-		"node-fetch": "^2.6.7",
-		"uuid": "^9.0.0"
+		"node-fetch": "^2.6.7"
 	},
 	"devDependencies": {
 		"@types/node": "^16.11.36",

@@ -3,14 +3,13 @@
 .sw?
 !jest.config.js
 *.d.ts
-
-# config
-*.config.json
+.npmrc
 
 # nodeSJ
 node_modules
 
 #Type Script
+#packages/*/lib
 dist/
 tsconfig.tsbuildinfo
 
@@ -26,3 +25,4 @@ cdk.out
 
 # Mac
 .ds_store
+
