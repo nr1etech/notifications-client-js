@@ -6,7 +6,7 @@
 	"homepage": "",
 	"license": "BSD-3-Clause",
 	"scripts": {
-		"clean": "./scripts/clean.sh",
+		"clean": "./scripts/clean-artifacts.sh",
 		"publish": "lerna run tsc && lerna publish"
 	},
 	"workspaces": [
