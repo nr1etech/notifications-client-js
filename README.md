@@ -9,14 +9,24 @@ This monorepo contains client packages for interfacing with the NetRadius Notifi
 `npm install @netradius/notifications-manage-client`
 
 
-### Developer Notes
-Do not add package dependencies using 'npm install'. Use the appropriate `lerna` commands
+## Developer Notes
+Do not add package dependencies using 'npm install'. Use the appropriate `lerna` commands.
 
-### `lerna` command summary. These commands should be run from the project root rather than the package roots.
+
+## Publishing to npmjs.org
+A `publish` or `automation` token is required and needs to be export in the `NPM_AUTH_TOKEN` environment variable before publishing.
+
+All work must be committed before lerna can will publish. The publishing process will modify the package.json files of the packages with the
+next version number and a new commit and tag will be pushed to the git repository.
+
+Execute the publish by running the `npm run publish` command.
+
+
+## `lerna` command summary.
+These commands should be run from the project root rather than the package roots.
 
 - `npm install` -- install npm modules for the root and also all the workspaces in /packages. This must be run once after cloning to install the lerna packages.
 - `npx lerna bootstrap` -- install all dependencies and will also handle local dependencies (if any).
 - `npx lerna create package` -- add a new package to the monorepo with basic scaffolding. You will need to create the tsconfig.json and modify the package.json after the package is created.
 - `npx lerna add module /packages/package` -- replaces `npm install module` for packages. If a package path is omitted the module will be added as a dependency in all the packages.
 - `npx lerna run tsc`  -- runs the package.json script 'tsc' from all the packages (so you don't have to run them individually).
-

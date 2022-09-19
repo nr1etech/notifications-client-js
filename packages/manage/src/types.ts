@@ -8,7 +8,8 @@ export interface NotificationsManageClientOptions {
 export interface CustomerInfo {
 	Role: string,
 	CustomerID: string,
-	OrganizationName: string
+	OrganizationName: string,
+	ApiKey: string,
 }
 
 export interface ApiKeyResult {
@@ -27,6 +28,7 @@ export interface Message {
 	MessageID: string,
 	Type: MessageType,
 	MessageStatus: MessageStatus,
+	ServiceProvider: ServiceProvider,
 	SenderID: string,
 	SenderMessageID?: string,
 	SenderStatus?: string,
