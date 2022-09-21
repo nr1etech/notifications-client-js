@@ -2,7 +2,7 @@
 set -e
 
 if [[ -z "$NPM_AUTH_TOKEN" ]]; then
-	echo "NPM_AUHT_TOKEN is not set. Publish aborted." >&2
+	echo "NPM_AUTH_TOKEN is not set. Publish aborted." >&2
 	exit 1;
 fi
 
