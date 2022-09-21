@@ -12,6 +12,8 @@ This monorepo contains client packages for interfacing with the NetRadius Notifi
 ## Developer Notes
 Do not add package dependencies using 'npm install'. Use the appropriate `lerna` commands.
 
+The packages should be built using the `npm run build` command. This executes the build script to compile and lint the source.
+
 
 ## Publishing to npmjs.org
 A `publish` or `automation` token is required and needs to be export in the `NPM_AUTH_TOKEN` environment variable before publishing.
