@@ -8,7 +8,8 @@
 	"scripts": {
 		"preinstall": "",
 		"clean": "./scripts/clean-artifacts.sh",
-		"publish": "lerna run tsc && lerna publish"
+		"build": "./scripts/build.sh",
+		"publish": "./scripts/publish.sh"
 	},
 	"workspaces": [
 		"packages/*"

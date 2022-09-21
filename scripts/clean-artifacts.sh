@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-rm -r ./lerna-debug.log
+rm -rf ./lerna-debug.log
 
 rm -rf ./node_modules
 
