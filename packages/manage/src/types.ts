@@ -2,226 +2,226 @@
 // Client Types
 
 export interface NotificationsManageClientOptions {
-	authorizationToken: string
+	authorizationToken: string;
 }
 
 export interface CustomerInfo {
-	Role: string,
-	CustomerID: string,
-	OrganizationName: string,
-	ApiKey: string,
+	Role: string;
+	CustomerID: string;
+	OrganizationName: string;
+	ApiKey: string;
 }
 
 export interface ApiKeyResult {
-	ApiKey: string
+	ApiKey: string;
 }
 
 // **********************
 // Message Types
 
 export interface MessageList {
-	Results: Message[],
-	NextPage: string | undefined
+	Results: Message[];
+	NextPage: string | undefined;
 }
 
 export interface Message {
-	MessageID: string,
-	Type: MessageType,
-	MessageStatus: MessageStatus,
-	ServiceProvider: ServiceProvider,
-	SenderID: string,
-	SenderMessageID?: string,
-	SenderStatus?: string,
-	SenderStatusMessage?: string,
-	TemplateSlug: string,
-	TemplateLocale: string | undefined,
-	Recipient: EmailRecipient | SmsRecipient,
-	DateCreated: string,
-	DateCompleted: string,
-	MergeValues?: unknown,
-	Metadata?: Record<string, string>
+	MessageID: string;
+	Type: MessageType;
+	MessageStatus: MessageStatus;
+	ServiceProvider: ServiceProvider;
+	SenderID: string;
+	SenderMessageID?: string;
+	SenderStatus?: string;
+	SenderStatusMessage?: string;
+	TemplateSlug: string;
+	TemplateLocale: string | undefined;
+	Recipient: EmailRecipient | SmsRecipient;
+	DateCreated: string;
+	DateCompleted: string;
+	MergeValues?: Record<string, unknown>;
+	Metadata?: Record<string, string>;
 }
 
 export interface EmailRecipient {
-	Name: string,
-	Email: string
+	Name: string;
+	Email: string;
 }
 
 export interface SmsRecipient {
-	Phone: string
+	Phone: string;
 }
 
 export interface CreateEmailMessage {
-	TemplateSlug: string,
-	TemplateLocale: string | undefined,
-	Recipient: EmailRecipient,
-	MergeValues?: unknown,
-	Metadata?: Record<string, string>
+	TemplateSlug: string;
+	TemplateLocale: string | undefined;
+	Recipient: EmailRecipient;
+	MergeValues?: Record<string, unknown>;
+	Metadata?: Record<string, string>;
 }
 
 export interface CreateSmsMessage {
-	TemplateSlug: string,
-	TemplateLocale: string | undefined,
-	Recipient: SmsRecipient,
-	MergeValues?: unknown,
-	Metadata?: Record<string, string>
+	TemplateSlug: string;
+	TemplateLocale: string | undefined;
+	Recipient: SmsRecipient;
+	MergeValues?: Record<string, unknown>;
+	Metadata?: Record<string, string>;
 }
 
 export interface CreateMessageResult {
-	MessageID: string
+	MessageID: string;
 }
 
 // **********************
 // Customer Types
 
 export interface CustomerList {
-	Results: Customer[],
-	NextPage: string | undefined
+	Results: Customer[];
+	NextPage: string | undefined;
 }
 
 export interface Customer {
-	CustomerID: string,
-	ApiKey: string,
-	OrganizationName: string,
-	Status: CustomerStatus
+	CustomerID: string;
+	ApiKey: string;
+	OrganizationName: string;
+	Status: CustomerStatus;
 }
 
 export interface CreateCustomerData {
-	OrganizationName: string
+	OrganizationName: string;
 }
 
 export interface UpdateCustomerData {
-	OrganizationName?: string,
-	ApiKey?: string,
-	Status?: CustomerStatus
+	OrganizationName?: string;
+	ApiKey?: string;
+	Status?: CustomerStatus;
 }
 
 // **********************
 // Template Types
 
 export interface TemplateList {
-	Results: Template[],
-	NextPage: string | undefined
+	Results: Template[];
+	NextPage: string | undefined;
 }
 
 export interface Template {
-	Slug: string,
-	Locale: string,
-	Name: string,
-	Type: MessageType,
-	Status: TemplateStatus,
-	Content?: TemplateContent[],
+	Slug: string;
+	Locale: string;
+	Name: string;
+	Type: MessageType;
+	Status: TemplateStatus;
+	Content?: TemplateContent[];
 }
 
 export interface TemplateContent {
-	Stage: TemplateStage,
-	Subject: string | undefined,
-	Body: string,
-	DateLastModified: string,
+	Stage: TemplateStage;
+	Subject: string | undefined;
+	Body: string;
+	DateLastModified: string;
 }
 
 export interface CreateTemplateData {
-	Slug: string,
-	Locale?: string,
-	Name: string,
-	Type: MessageType,
-	Status: TemplateStatus,
-	Stage: TemplateStage,
-	Subject?: string,
-	Body: string
+	Slug: string;
+	Locale?: string;
+	Name: string;
+	Type: MessageType;
+	Status: TemplateStatus;
+	Stage: TemplateStage;
+	Subject?: string;
+	Body: string;
 }
 
 export interface UpdateTemplateData {
-	Name?: string,
-	Status?: TemplateStatus,
-	Stage?: TemplateStage,
-	Subject?: string,
-	Body?: string
+	Name?: string;
+	Status?: TemplateStatus;
+	Stage?: TemplateStage;
+	Subject?: string;
+	Body?: string;
 }
 
 // **********************
 // Sender Types
 
 export interface SenderList {
-	Results: Sender[],
-	NextPage: string | undefined
+	Results: Sender[];
+	NextPage: string | undefined;
 }
 
 export interface Sender {
-	SenderID: string,
-	Name: string,
-	Type: MessageType,
-	Status: SenderStatus,
-	Priority: number,
-	ServiceProvider: ServiceProvider,
-	SenderConfiguration: any,
+	SenderID: string;
+	Name: string;
+	Type: MessageType;
+	Status: SenderStatus;
+	Priority: number;
+	ServiceProvider: ServiceProvider;
+	SenderConfiguration: any;
 }
 
 export interface CreateSenderData {
-	Name: string,
-	Type: MessageType,
-	Status: SenderStatus,
-	Priority: number,
-	ServiceProvider: ServiceProvider,
-	SenderConfiguration: Object
+	Name: string;
+	Type: MessageType;
+	Status: SenderStatus;
+	Priority: number;
+	ServiceProvider: ServiceProvider;
+	SenderConfiguration: Record<string, unknown>;
 }
 
 export interface UpdateSenderData {
-	Name?: string,
-	Type?: MessageType,
-	Status?: SenderStatus,
-	Priority?: number,
-	ServiceProvider?: ServiceProvider,
-	SenderConfiguration?: Object
+	Name?: string;
+	Type?: MessageType;
+	Status?: SenderStatus;
+	Priority?: number;
+	ServiceProvider?: ServiceProvider;
+	SenderConfiguration?: Record<string, unknown>;
 }
 
 // **********************
 // AppKey Types
 
 export interface AppKeyList {
-	Results: AppKey[],
-	NextPage: string | undefined
+	Results: AppKey[];
+	NextPage: string | undefined;
 }
 
 export interface AppKey {
-	AppKeyID: string,
-	Name: string,
-	Type: AppKeyType,
-	Status: AppKeyStatus,
-	AppKey: string,
-	KeySnippet: string
+	AppKeyID: string;
+	Name: string;
+	Type: AppKeyType;
+	Status: AppKeyStatus;
+	AppKey: string;
+	KeySnippet: string;
 }
 
 export interface CreateAppKeyData {
-	Name: string,
-	Type: AppKeyType
+	Name: string;
+	Type: AppKeyType;
 }
 
 export interface UpdateAppKeyData {
-	Name?: string,
-	Status?: AppKeyStatus
+	Name?: string;
+	Status?: AppKeyStatus;
 }
 
 // **********************
 // Block Types
 
 export interface BlockList {
-	Results: Block[],
-	NextPage: string | undefined
+	Results: Block[];
+	NextPage: string | undefined;
 }
 
 export interface Block {
-	BlockID: string,
-	Recipient: string,
-	Reason: string,
-	Description: string | undefined,
-	DateAdded: string
+	BlockID: string;
+	Recipient: string;
+	Reason: BlockReasonType;
+	Description: string | undefined;
+	DateAdded: string;
 }
 
 export interface CreateBlockData {
-	Recipient: string,
-	Reason: BlockReasonType,
-	Description?: string
+	Recipient: string;
+	Reason: BlockReasonType;
+	Description?: string;
 }
 
 // **********************
@@ -235,27 +235,27 @@ export enum MessageType {
 export enum MessageStatus {
 	Pending = "pending",
 	Success = "success",
-	Failure = "failure"
+	Failure = "failure",
 }
 
 export enum CustomerStatus {
 	Active = "active",
-	Inactive = "inactive"
+	Inactive = "inactive",
 }
 
 export enum TemplateStatus {
 	Active = "active",
-	Inactive = "inactive"
+	Inactive = "inactive",
 }
 
 export enum TemplateStage {
 	Published = "PUBLISHED",
-	Draft = "DRAFT"
+	Draft = "DRAFT",
 }
 
 export enum SenderStatus {
 	Active = "active",
-	Inactive = "inactive"
+	Inactive = "inactive",
 }
 
 export enum ServiceProvider {
@@ -267,7 +267,7 @@ export enum ServiceProvider {
 
 export enum AppKeyStatus {
 	Active = "active",
-	Inactive = "inactive"
+	Inactive = "inactive",
 }
 
 export enum AppKeyType {
@@ -284,5 +284,5 @@ export enum BlockReasonType {
 	Blocked = "blocked",
 	OptOut = "optout",
 	Other = "other",
-	Manual = "manual"
+	Manual = "manual",
 }

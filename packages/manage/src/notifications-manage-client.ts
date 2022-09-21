@@ -9,7 +9,7 @@ export class NotificationsManageClient {
 	private initComplete:boolean = false;
 
 	constructor(baseUrl:string, options:Types.NotificationsManageClientOptions) {
-		baseUrl = baseUrl.slice(-1) === "/" ? baseUrl.slice(0, -1) : baseUrl;	// remove trailing slash
+		baseUrl = baseUrl.endsWith("/") ? baseUrl.slice(0, -1) : baseUrl;	// remove trailing slash
 
 		if (!this.isUrl(baseUrl)) throw new Errors.ArgumentError("baseUrl is invalid.");
 
@@ -59,7 +59,7 @@ export class NotificationsManageClient {
 	 * Generates a valid API key.
 	 */
 	async generateApiKey():Promise<Types.ApiKeyResult> {
-		let uri = "/manage/apikey";
+		const uri = "/manage/apikey";
 
 		return await this.executeRequest<Types.ApiKeyResult>(uri, "POST", "create-apikey");
 	}
@@ -68,10 +68,10 @@ export class NotificationsManageClient {
 	 * Get a list of messages. Limits the number of records by pageSize and starting with the record at nextPageID.
 	 */
 	async getMessages(pageSize:number, nextPageID?:string):Promise<Types.MessageList> {
-		let uri = "/manage/customer/{{customerID}}/messages";
+		const uri = "/manage/customer/{{customerID}}/messages";
 
 		return await this.executeRequest<Types.MessageList>(uri, "GET", "list-message", undefined, {
-			pagesize: pageSize,
+			pagesize: pageSize.toString(),
 			nextpage: nextPageID,
 		});
 	}
@@ -110,10 +110,10 @@ export class NotificationsManageClient {
 	 * Limits the number of records by pageSize and starting with the record at nextPageID.
 	 */
 	async getCustomers(pageSize:number, nextPageID?:string):Promise<Types.CustomerList> {
-		let uri = "/manage/customers";	// This URI is different. We don't embed the client customer id because the get customers endpoint does not use it.
+		const uri = "/manage/customers";	// This URI is different. We don't embed the client customer id because the get customers endpoint does not use it.
 
 		return await this.executeRequest<Types.CustomerList>(uri, "GET", "list-customer", undefined, {
-			pagesize: pageSize,
+			pagesize: pageSize.toString(),
 			nextpage: nextPageID,
 		});
 	}
@@ -135,7 +135,7 @@ export class NotificationsManageClient {
 	 * Creates a new customer. Only an admin app key can create customers.
 	 */
 	async createCustomer(customer:Types.CreateCustomerData):Promise<Types.Customer> {
-		let uri = "/manage/customer";	// This URI is different. We don't embed the client customer id because the create customer endpoint does not use it.
+		const uri = "/manage/customer";	// This URI is different. We don't embed the client customer id because the create customer endpoint does not use it.
 
 		return await this.executeRequest<Types.Customer>(uri, "POST", "create-customer", customer);
 	}
@@ -144,7 +144,7 @@ export class NotificationsManageClient {
 	 * Update an existing customer.
 	 */
 	async updateCustomer(customerID:string, customer:Types.UpdateCustomerData):Promise<Types.Customer> {
-		let uri = `/manage/customer/${encodeURIComponent(customerID)}`;	// This URI is different. We don't embed the client customer id because the update customer endpoint does use it.
+		const uri = `/manage/customer/${encodeURIComponent(customerID)}`;	// This URI is different. We don't embed the client customer id because the update customer endpoint does use it.
 
 		return await this.executeRequest<Types.Customer>(uri, "PATCH", "update-customer", customer);
 	}
@@ -153,9 +153,9 @@ export class NotificationsManageClient {
 	 * Delete an existing customer.
 	 */
 	async deleteCustomer(customerID:string):Promise<void> {
-		let uri = `/manage/customer/${encodeURIComponent(customerID)}`;	// This URI is different. We don't embed the client customer id because the update customer endpoint does use it.
+		const uri = `/manage/customer/${encodeURIComponent(customerID)}`;	// This URI is different. We don't embed the client customer id because the update customer endpoint does use it.
 
-		return await this.executeRequest<void>(uri, "DELETE", "delete-customer");
+		return await this.executeRequest(uri, "DELETE", "delete-customer");
 	}
 
 	/**
@@ -166,7 +166,7 @@ export class NotificationsManageClient {
 		const uri = "/manage/customer/{{customerID}}/templates";
 
 		return await this.executeRequest<Types.TemplateList>(uri, "GET", "list-template", undefined, {
-			pagesize: pageSize,
+			pagesize: pageSize.toString(),
 			nextpage: nextPageID,
 		});
 	}
@@ -213,7 +213,7 @@ export class NotificationsManageClient {
 			uri += "/" + encodeURIComponent(locale);
 		}
 
-		return await this.executeRequest<void>(uri, "DELETE", "delete-template");
+		return await this.executeRequest(uri, "DELETE", "delete-template");
 	}
 
 	/**
@@ -224,7 +224,7 @@ export class NotificationsManageClient {
 		const uri = "/manage/customer/{{customerID}}/senders";
 
 		return await this.executeRequest(uri, "GET", "list-sender", undefined, {
-			pagesize: pageSize,
+			pagesize: pageSize.toString(),
 			nextpage: nextPageID,
 		});
 	}
@@ -262,7 +262,7 @@ export class NotificationsManageClient {
 	async deleteSender(senderID:string):Promise<void> {
 		const uri = `/manage/customer/{{customerID}}/sender/${encodeURIComponent(senderID)}`;
 
-		return await this.executeRequest<void>(uri, "DELETE", "delete-sender");
+		return await this.executeRequest(uri, "DELETE", "delete-sender");
 	}
 
 	/**
@@ -273,7 +273,7 @@ export class NotificationsManageClient {
 		const uri = "/manage/customer/{{customerID}}/appkeys";
 
 		return await this.executeRequest<Types.AppKeyList>(uri, "GET", "list-appkey", undefined, {
-			pagesize: pageSize,
+			pagesize: pageSize.toString(),
 			nextpage: nextPageID,
 		});
 	}
@@ -311,18 +311,18 @@ export class NotificationsManageClient {
 	async deleteAppKey(appKeyID:string):Promise<void> {
 		const uri = `/manage/customer/{{customerID}}/appkey/${encodeURIComponent(appKeyID)}`;
 
-		return await this.executeRequest<void>(uri, "DELETE", "delete-appkey");
+		return await this.executeRequest(uri, "DELETE", "delete-appkey");
 	}
 
 	/**
 	 * Get a list of blocks.
 	 * Limits the number of records by pageSize and starting with the record at nextPageID.
 	 */
-	async getBlocks(pageSize:number, nextPageID?:String):Promise<Types.BlockList> {
+	async getBlocks(pageSize:number, nextPageID?:string):Promise<Types.BlockList> {
 		const uri = "/manage/customer/{{customerID}}/blocks";
 
 		return await this.executeRequest<Types.BlockList>(uri, "GET", "list-block", undefined, {
-			pagesize: pageSize,
+			pagesize: pageSize.toString(),
 			nextpage: nextPageID,
 		});
 	}
@@ -351,32 +351,33 @@ export class NotificationsManageClient {
 	async deleteBlock(blockID:string):Promise<void> {
 		const uri = `/manage/customer/{{customerID}}/block/${encodeURIComponent(blockID)}`;
 
-		await this.executeRequest<void>(uri, "DELETE", "delete-block");
+		await this.executeRequest(uri, "DELETE", "delete-block");
 	}
 
 	// If there is a network response with JSON then a tuple is returned (boolean success, object jsonContent). If any exceptions are thrown they are not handled by this method.
-	private async executeRequest<T>(uri:string, method:string, contentTypeResource:string, requestBody?:any, queryParameters?:any):Promise<T> {
+	private async executeRequest<T>(uri:string, method:string, contentTypeResource:string, requestBody?:unknown, queryParameters?:Record<string, string|undefined>|undefined):Promise<T> {
 		await this.initClient();
 		uri = uri.replace(/{{customerID}}/, encodeURIComponent(this.customerID!));
 
 		let qp = "";
 		if (queryParameters) {
+			const cleanedQP = {} as Record<string, string>;
 			for (const [k, v] of Object.entries(queryParameters)) {
-				if (v === undefined || v === null) {
-					delete queryParameters[k];
+				if (v != undefined) {
+					cleanedQP[k] = v;
 				}
 			}
 
-			qp = "?" + new URLSearchParams(queryParameters);
+			qp = "?" + (new URLSearchParams(cleanedQP)).toString();
 		}
 
-		let requestData:any = undefined;
+		let requestData:string|undefined;
 		if (requestBody) {
 			requestData = (typeof requestBody === "string") ? requestBody : JSON.stringify(requestBody);
 		}
 
 		let responseBodyText:string|undefined = undefined;
-		let responseBody:any = undefined;
+		let responseBody:unknown = undefined;
 
 		let response:Response|undefined;
 
@@ -390,12 +391,8 @@ export class NotificationsManageClient {
 				body: requestData,
 			});
 			responseBodyText = await response.text();
-		} catch (ex:any) {
+		} catch (ex) {
 			throw new Errors.FetchError((ex as Error).message, { cause: ex });
-		}
-
-		if (!response) {
-			throw new Errors.ResponseError("Server did not respond");
 		}
 
 		if (response.status === 401 || response.status === 403) {	// AWS HTTP API Gateway returns 403 from the authorizer (instead of 401) if the credentials are invalid
@@ -412,7 +409,7 @@ export class NotificationsManageClient {
 		}
 
 		if (response.status != 200) {
-			throw new Errors.ResponseError(responseBody.Error || responseBodyText);
+			throw new Errors.ResponseError((responseBody as ErrorResponse).Error ?? responseBodyText);
 		}
 
 		return responseBody as T;
@@ -446,4 +443,8 @@ export class NotificationsManageClient {
 
 		return false;
 	}
+}
+
+interface ErrorResponse extends Record<string, unknown> {
+	Error:string|undefined;
 }

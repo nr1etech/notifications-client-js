@@ -9,7 +9,7 @@ export class NotificationsMessageClient {
 	 * Notification Messaging service client.
 	 */
 	constructor(baseUrl: string, options: NotificationsMessageClientOptions) {
-		baseUrl = baseUrl.slice(-1) === "/" ? baseUrl.slice(0, -1) : baseUrl;	// remove trailing slash
+		baseUrl = baseUrl.endsWith("/") ? baseUrl.slice(0, -1) : baseUrl;	// remove trailing slash
 
 		if (!this.isUrl(baseUrl)) throw new ArgumentError("baseUrl is invalid.");
 
@@ -60,14 +60,14 @@ export class NotificationsMessageClient {
 		});
 	}
 
-	private async executeRequest(uri:string, contentTypeResource:string, message:any):Promise<SendResponse> {
+	private async executeRequest(uri:string, contentTypeResource:string, message:unknown):Promise<SendResponse> {
 
-		let requestData:any = JSON.stringify(message);
+		const requestData = JSON.stringify(message);
 
 		let responseBodyText:string|undefined = undefined;
-		let responseBody:any = undefined;
+		let responseBody:unknown;
 
-		let response:Response|undefined;
+		let response:Response|undefined = undefined;
 
 		try {
 			response = await fetch(this.baseUrl + uri, {
@@ -79,12 +79,8 @@ export class NotificationsMessageClient {
 				body: requestData,
 			});
 			responseBodyText = await response.text();
-		} catch (ex:any) {
+		} catch (ex) {
 			throw new FetchError((ex as Error).message, { cause: ex });
-		}
-
-		if (!response) {
-			throw new ResponseError("Server did not respond");
 		}
 
 		if (response.status === 401 || response.status === 403) {	// AWS HTTP API Gateway returns 403 from the authorizer (instead of 401) if the credentials are invalid
@@ -100,7 +96,7 @@ export class NotificationsMessageClient {
 		}
 
 		if (response.status != 200) {
-			throw new ResponseError(responseBody.Error || responseBodyText);
+			throw new ResponseError((responseBody as ErrorResponse).Error ?? responseBodyText);
 		}
 
 		return responseBody as SendResponse;
@@ -114,6 +110,10 @@ export class NotificationsMessageClient {
 
 		return false;
 	}
+}
+
+interface ErrorResponse extends Record<string, unknown> {
+	Error: string|undefined;
 }
 
 export interface SendResponse {
@@ -138,13 +138,13 @@ export class EmailMessage {
 	templateSlug:string;
 	templateLocale:string|undefined;
 	recipient:EmailRecipient;
-	mergeValues:Record<string, any>|undefined;
+	mergeValues:Record<string, unknown>|undefined;
 	metadata:Record<string,string>|undefined;
 
 	/**
 	 * Email Message information used to send an email.
 	 */
-	constructor(templateSlug:string, templateLocale:string|undefined, recipient:EmailRecipient, mergeValues:Record<string, any>|undefined, metadata:Record<string,string>|undefined) {
+	constructor(templateSlug:string, templateLocale:string|undefined, recipient:EmailRecipient, mergeValues:Record<string, unknown>|undefined, metadata:Record<string,string>|undefined) {
 		this.templateSlug = templateSlug;
 		this.templateLocale = templateLocale;
 		this.recipient = recipient;
@@ -172,7 +172,7 @@ export class SmsMessage {
 	templateSlug:string;
 	templateLocale:string|undefined;
 	recipient:SmsRecipient;
-	mergeValues:Record<string, any>|undefined;
+	mergeValues:Record<string, unknown>|undefined;
 	metadata:Record<string, string>|undefined;
 
 	/**
@@ -183,7 +183,7 @@ export class SmsMessage {
 	 * @param {Object} mergeValues
 	 * @param {Metadata} metadata
 	 */
-	constructor(templateSlug:string, templateLocale:string|undefined, recipient:SmsRecipient, mergeValues:Record<string, any>|undefined, metadata:Record<string,string>|undefined) {
+	constructor(templateSlug:string, templateLocale:string|undefined, recipient:SmsRecipient, mergeValues:Record<string, unknown>|undefined, metadata:Record<string,string>|undefined) {
 		this.templateSlug = templateSlug;
 		this.templateLocale = templateLocale;
 		this.recipient = recipient;

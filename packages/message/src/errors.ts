@@ -1,4 +1,4 @@
-export interface ErrorOptions { cause: any }
+export interface ErrorOptions { cause: unknown }
 
 // Based on https://www.bennadel.com/blog/3226-experimenting-with-error-sub-classing-using-es5-and-typescript-2-1-5.htm
 
@@ -9,7 +9,7 @@ class NotificationMessageError {
 	public name: string;
 	public message: string;
 	public stack?: string;
-	public cause:any|undefined;
+	public cause:unknown|undefined;
 
 	constructor(message:string, name:string, options:ErrorOptions|undefined) {
 		this.name = name;
@@ -19,6 +19,7 @@ class NotificationMessageError {
 	}
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 Object.setPrototypeOf(NotificationMessageError, Object.create(Error.prototype));
 
 export class ArgumentError extends NotificationMessageError {
