@@ -17,6 +17,7 @@ module.exports = {
 	],
 	"rules": {
 		"no-empty": 0,	// I'll have empty blocks if I want to
+		"@typescript-eslint/no-explicit-any": 2,
 		"@typescript-eslint/no-empty-interface": 0,
 		"@typescript-eslint/no-unused-vars": [2, { "args": "none" }],	// Some interface function implementations don't use all the parameters, and that's ok
 		"@typescript-eslint/no-inferrable-types": 0,	// some times I like to explicitly give the type

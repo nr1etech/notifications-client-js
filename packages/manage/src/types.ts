@@ -154,7 +154,7 @@ export interface Sender {
 	Status: SenderStatus;
 	Priority: number;
 	ServiceProvider: ServiceProvider;
-	SenderConfiguration: any;
+	SenderConfiguration: Record<string, unknown>;
 }
 
 export interface CreateSenderData {
