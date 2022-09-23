@@ -34,7 +34,7 @@ export interface Message {
 	SenderStatus?: string;
 	SenderStatusMessage?: string;
 	TemplateSlug: string;
-	TemplateLocale: string | undefined;
+	TemplateLocale: string;
 	Recipient: EmailRecipient | SmsRecipient;
 	DateCreated: string;
 	DateCompleted: string;
@@ -53,7 +53,7 @@ export interface SmsRecipient {
 
 export interface CreateEmailMessage {
 	TemplateSlug: string;
-	TemplateLocale: string | undefined;
+	TemplateLocale?: string;
 	Recipient: EmailRecipient;
 	MergeValues?: Record<string, unknown>;
 	Metadata?: Record<string, string>;
@@ -61,7 +61,7 @@ export interface CreateEmailMessage {
 
 export interface CreateSmsMessage {
 	TemplateSlug: string;
-	TemplateLocale: string | undefined;
+	TemplateLocale?: string;
 	Recipient: SmsRecipient;
 	MergeValues?: Record<string, unknown>;
 	Metadata?: Record<string, string>;
@@ -122,7 +122,7 @@ export interface TemplateContent {
 
 export interface CreateTemplateData {
 	Slug: string;
-	Locale?: string;
+	Locale: string;
 	Name: string;
 	Type: MessageType;
 	Status: TemplateStatus;
