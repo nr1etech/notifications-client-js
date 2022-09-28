@@ -33,6 +33,7 @@ export interface Message {
 	SenderMessageID?: string;
 	SenderStatus?: string;
 	SenderStatusMessage?: string;
+	TemplateID: string;
 	TemplateSlug: string;
 	TemplateLocale: string;
 	Recipient: EmailRecipient | SmsRecipient;
@@ -105,6 +106,7 @@ export interface TemplateList {
 }
 
 export interface Template {
+	TemplateID: string;
 	Slug: string;
 	Locale: string;
 	Name: string;
@@ -233,7 +235,10 @@ export enum MessageType {
 }
 
 export enum MessageStatus {
+	Created = "created",
 	Pending = "pending",
+	Sending = "sending",
+	Sent = "sent",
 	Success = "success",
 	Failure = "failure",
 }
