@@ -135,6 +135,8 @@ export interface CreateTemplateData {
 
 export interface UpdateTemplateData {
 	Name?: string;
+	Slug?: string;
+	Locale?: string;
 	Status?: TemplateStatus;
 	Stage?: TemplateStage;
 	Subject?: string;

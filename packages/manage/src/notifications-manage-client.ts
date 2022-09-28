@@ -174,11 +174,8 @@ export class NotificationsManageClient {
 	/**
 	 * Get a template record.
 	 */
-	async getTemplate(slug:string, locale:string|undefined):Promise<Types.Template> {
-		let uri = `/manage/customer/{{customerID}}/template/${encodeURIComponent(slug)}`;
-		if (locale) {
-			uri += "/" + encodeURIComponent(locale);
-		}
+	async getTemplate(templateID:string):Promise<Types.Template> {
+		const uri = `/manage/customer/{{customerID}}/template/${encodeURIComponent(templateID)}`;
 
 		return await this.executeRequest<Types.Template>(uri, "GET", "get-template");
 	}
@@ -195,11 +192,8 @@ export class NotificationsManageClient {
 	/**
 	 * Update an existing template.
 	 */
-	async updateTemplate(slug:string, locale:string|undefined, template:Types.UpdateTemplateData):Promise<Types.Template> {
-		let uri = `/manage/customer/{{customerID}}/template/${encodeURIComponent(slug)}`;
-		if (locale) {
-			uri += "/" + encodeURIComponent(locale);
-		}
+	async updateTemplate(templateID:string, template:Types.UpdateTemplateData):Promise<Types.Template> {
+		const uri = `/manage/customer/{{customerID}}/template/${encodeURIComponent(templateID)}`;
 
 		return await this.executeRequest<Types.Template>(uri, "PATCH", "update-template", template);
 	}
@@ -207,11 +201,8 @@ export class NotificationsManageClient {
 	/**
 	 * Delete an existing template.
 	 */
-	async deleteTemplate(slug:string, locale:string|undefined):Promise<void> {
-		let uri = `/manage/customer/{{customerID}}/template/${encodeURIComponent(slug)}`;
-		if (locale) {
-			uri += "/" + encodeURIComponent(locale);
-		}
+	async deleteTemplate(templateID:string):Promise<void> {
+		const uri = `/manage/customer/{{customerID}}/template/${encodeURIComponent(templateID)}`;
 
 		return await this.executeRequest(uri, "DELETE", "delete-template");
 	}
