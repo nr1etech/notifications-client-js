@@ -36,6 +36,7 @@ export interface Message {
 	TemplateID: string;
 	TemplateSlug: string;
 	TemplateLocale: string;
+	FallbackOriginalLocale?: string;
 	Recipient: EmailRecipient | SmsRecipient;
 	DateCreated: string;
 	DateCompleted: string;
