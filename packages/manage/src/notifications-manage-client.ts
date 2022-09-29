@@ -86,6 +86,15 @@ export class NotificationsManageClient {
 	}
 
 	/**
+	 * Delete an existing message. Admin only.
+	 */
+	async deleteMessage(messageID:string):Promise<void> {
+		const uri = `/manage/customer/{{customerID}}/message/${encodeURIComponent(messageID)}`;
+
+		return await this.executeRequest(uri, "DELETE", "delete-message");
+	}
+
+	/**
 	 * Create an email message.
 	 */
 	async createEmailMessage(emailMessage:Types.CreateEmailMessage, test:boolean):Promise<Types.CreateMessageResult> {
