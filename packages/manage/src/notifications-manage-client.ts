@@ -5,7 +5,7 @@ import fetch, { Response } from "node-fetch";
 export class NotificationsManageClient {
 	private baseUrl:string;
 	private authorizationToken:string;
-	private customerID:string|undefined;
+	private organizationID:string|undefined;
 	private initComplete:boolean = false;
 
 	constructor(baseUrl:string, options:Types.NotificationsManageClientOptions) {
@@ -32,27 +32,27 @@ export class NotificationsManageClient {
 	}
 
 	/**
-	 * Set the Customer ID that will be passed to all API requests.
+	 * Set the Organization ID that will be passed to all API requests.
 	 */
-	configureForOverrideCustomer(customerID:string):void {
-		this.customerID = customerID;
+	configureForOverrideOrganization(organizationID:string):void {
+		this.organizationID = organizationID;
 	}
 
 	/**
-	 * Remove the Customer ID. The customer for the Authorization Token will be used for requests.
+	 * Remove the Organization ID. The organization for the Authorization Token will be used for requests.
 	 */
-	clearOverrideCustomer() {
-		this.customerID = undefined;
+	clearOverrideOrganization() {
+		this.organizationID = undefined;
 		this.initComplete = false;
 	}
 
 	/**
-	 * Get an info object for the authorized customer.
+	 * Get an info object for the authorized organization.
 	 */
-	async getInfo():Promise<Types.CustomerInfo> {
+	async getInfo():Promise<Types.OrganizationInfo> {
 		const uri = "/manage/info";
 
-		return await this.executeRequest<Types.CustomerInfo>(uri, "GET", "get-info");
+		return await this.executeRequest<Types.OrganizationInfo>(uri, "GET", "get-info");
 	}
 
 	/**
@@ -68,7 +68,7 @@ export class NotificationsManageClient {
 	 * Get a list of messages. Limits the number of records by pageSize and starting with the record at nextPageID.
 	 */
 	async getMessages(pageSize:number, nextPageID?:string):Promise<Types.MessageList> {
-		const uri = "/manage/customer/{{customerID}}/messages";
+		const uri = "/manage/organization/{{organizationID}}/messages";
 
 		return await this.executeRequest<Types.MessageList>(uri, "GET", "list-message", undefined, {
 			pagesize: pageSize.toString(),
@@ -80,7 +80,7 @@ export class NotificationsManageClient {
 	 * Get a message record.
 	 */
 	async getMessage(messageID:string):Promise<Types.Message> {
-		const uri = `/manage/customer/{{customerID}}/message/${encodeURIComponent(messageID)}`;
+		const uri = `/manage/organization/{{organizationID}}/message/${encodeURIComponent(messageID)}`;
 
 		return await this.executeRequest<Types.Message>(uri, "GET", "get-message");
 	}
@@ -89,7 +89,7 @@ export class NotificationsManageClient {
 	 * Delete an existing message. Admin only.
 	 */
 	async deleteMessage(messageID:string):Promise<void> {
-		const uri = `/manage/customer/{{customerID}}/message/${encodeURIComponent(messageID)}`;
+		const uri = `/manage/organization/{{organizationID}}/message/${encodeURIComponent(messageID)}`;
 
 		return await this.executeRequest(uri, "DELETE", "delete-message");
 	}
@@ -98,7 +98,7 @@ export class NotificationsManageClient {
 	 * Create an email message.
 	 */
 	async createEmailMessage(emailMessage:Types.CreateEmailMessage, test:boolean):Promise<Types.CreateMessageResult> {
-		const uri = "/manage/customer/{{customerID}}/message";
+		const uri = "/manage/organization/{{organizationID}}/message";
 		const contentType = test ? "create-test-email-message" : "create-email-message";
 
 		return await this.executeRequest<Types.CreateMessageResult>(uri, "POST", contentType, emailMessage);
@@ -108,63 +108,63 @@ export class NotificationsManageClient {
 	 * Create an SMS message.
 	 */
 	async createSmsMessage(smsMessage:Types.CreateSmsMessage, test:boolean):Promise<Types.CreateMessageResult> {
-		const uri = "/manage/customer/{{customerID}}/message";
+		const uri = "/manage/organization/{{organizationID}}/message";
 		const contentType = test ? "create-test-sms-message" : "create-sms-message";
 
 		return await this.executeRequest<Types.CreateMessageResult>(uri, "POST", contentType, smsMessage);
 	}
 
 	/**
-	 * Get a list of customers. Only an admin app key can make this request.
+	 * Get a list of organizations. Only an admin app key can make this request.
 	 * Limits the number of records by pageSize and starting with the record at nextPageID.
 	 */
-	async getCustomers(pageSize:number, nextPageID?:string):Promise<Types.CustomerList> {
-		const uri = "/manage/customers";	// This URI is different. We don't embed the client customer id because the get customers endpoint does not use it.
+	async getOrganizations(pageSize:number, nextPageID?:string):Promise<Types.OrganizationList> {
+		const uri = "/manage/organizations";	// This URI is different. We don't embed the client organization id because the get organizations endpoint does not use it.
 
-		return await this.executeRequest<Types.CustomerList>(uri, "GET", "list-customer", undefined, {
+		return await this.executeRequest<Types.OrganizationList>(uri, "GET", "list-organization", undefined, {
 			pagesize: pageSize.toString(),
 			nextpage: nextPageID,
 		});
 	}
 
 	/**
-	 * Get a customer record. Only an admin app key can get customer records other than its own.
+	 * Get a organization record. Only an admin app key can get organization records other than its own.
 	 */
-	async getCustomer(customerID?:string|undefined):Promise<Types.Customer> {
-		let uri = "/manage/customer";	// This URI is different. We don't embed the client customer id because the get customer endpoint does not use it.
+	async getOrganization(organizationID?:string|undefined):Promise<Types.Organization> {
+		let uri = "/manage/organization";	// This URI is different. We don't embed the client organization id because the get organization endpoint does not use it.
 
-		if (customerID != undefined) {
-			uri += "/" + encodeURIComponent(customerID);
+		if (organizationID != undefined) {
+			uri += "/" + encodeURIComponent(organizationID);
 		}
 
-		return await this.executeRequest<Types.Customer>(uri, "GET", "get-customer");
+		return await this.executeRequest<Types.Organization>(uri, "GET", "get-organization");
 	}
 
 	/**
-	 * Creates a new customer. Only an admin app key can create customers.
+	 * Creates a new organization. Only an admin app key can create organizations.
 	 */
-	async createCustomer(customer:Types.CreateCustomerData):Promise<Types.Customer> {
-		const uri = "/manage/customer";	// This URI is different. We don't embed the client customer id because the create customer endpoint does not use it.
+	async createOrganization(organization:Types.CreateOrganizationData):Promise<Types.Organization> {
+		const uri = "/manage/organization";	// This URI is different. We don't embed the client organization id because the create organization endpoint does not use it.
 
-		return await this.executeRequest<Types.Customer>(uri, "POST", "create-customer", customer);
+		return await this.executeRequest<Types.Organization>(uri, "POST", "create-organization", organization);
 	}
 
 	/**
-	 * Update an existing customer.
+	 * Update an existing organization.
 	 */
-	async updateCustomer(customerID:string, customer:Types.UpdateCustomerData):Promise<Types.Customer> {
-		const uri = `/manage/customer/${encodeURIComponent(customerID)}`;	// This URI is different. We don't embed the client customer id because the update customer endpoint does use it.
+	async updateOrganization(organizationID:string, organization:Types.UpdateOrganizationData):Promise<Types.Organization> {
+		const uri = `/manage/organization/${encodeURIComponent(organizationID)}`;	// This URI is different. We don't embed the client organization id because the update organization endpoint does use it.
 
-		return await this.executeRequest<Types.Customer>(uri, "PATCH", "update-customer", customer);
+		return await this.executeRequest<Types.Organization>(uri, "PATCH", "update-organization", organization);
 	}
 
 	/**
-	 * Delete an existing customer.
+	 * Delete an existing organization.
 	 */
-	async deleteCustomer(customerID:string):Promise<void> {
-		const uri = `/manage/customer/${encodeURIComponent(customerID)}`;	// This URI is different. We don't embed the client customer id because the update customer endpoint does use it.
+	async deleteOrganization(organizationID:string):Promise<void> {
+		const uri = `/manage/organization/${encodeURIComponent(organizationID)}`;	// This URI is different. We don't embed the client organization id because the update organization endpoint does use it.
 
-		return await this.executeRequest(uri, "DELETE", "delete-customer");
+		return await this.executeRequest(uri, "DELETE", "delete-organization");
 	}
 
 	/**
@@ -172,7 +172,7 @@ export class NotificationsManageClient {
 	 * Limits the number of records by pageSize and starting with the record at nextPageID.
 	 */
 	async getTemplates(pageSize:number, nextPageID?:string):Promise<Types.TemplateList> {
-		const uri = "/manage/customer/{{customerID}}/templates";
+		const uri = "/manage/organization/{{organizationID}}/templates";
 
 		return await this.executeRequest<Types.TemplateList>(uri, "GET", "list-template", undefined, {
 			pagesize: pageSize.toString(),
@@ -184,7 +184,7 @@ export class NotificationsManageClient {
 	 * Get a template record.
 	 */
 	async getTemplate(templateID:string):Promise<Types.Template> {
-		const uri = `/manage/customer/{{customerID}}/template/${encodeURIComponent(templateID)}`;
+		const uri = `/manage/organization/{{organizationID}}/template/${encodeURIComponent(templateID)}`;
 
 		return await this.executeRequest<Types.Template>(uri, "GET", "get-template");
 	}
@@ -193,7 +193,7 @@ export class NotificationsManageClient {
 	 * Creates a new template.
 	 */
 	async createTemplate(template:Types.CreateTemplateData):Promise<Types.Template> {
-		const uri = "/manage/customer/{{customerID}}/template";
+		const uri = "/manage/organization/{{organizationID}}/template";
 
 		return await this.executeRequest<Types.Template>(uri, "POST", "create-template", template);
 	}
@@ -202,7 +202,7 @@ export class NotificationsManageClient {
 	 * Update an existing template.
 	 */
 	async updateTemplate(templateID:string, template:Types.UpdateTemplateData):Promise<Types.Template> {
-		const uri = `/manage/customer/{{customerID}}/template/${encodeURIComponent(templateID)}`;
+		const uri = `/manage/organization/{{organizationID}}/template/${encodeURIComponent(templateID)}`;
 
 		return await this.executeRequest<Types.Template>(uri, "PATCH", "update-template", template);
 	}
@@ -211,7 +211,7 @@ export class NotificationsManageClient {
 	 * Delete an existing template.
 	 */
 	async deleteTemplate(templateID:string):Promise<void> {
-		const uri = `/manage/customer/{{customerID}}/template/${encodeURIComponent(templateID)}`;
+		const uri = `/manage/organization/{{organizationID}}/template/${encodeURIComponent(templateID)}`;
 
 		return await this.executeRequest(uri, "DELETE", "delete-template");
 	}
@@ -221,7 +221,7 @@ export class NotificationsManageClient {
 	 * Limits the number of records by pageSize and starting with the record at nextPageID.
 	 */
 	async getSenders(pageSize:number, nextPageID?:string):Promise<Types.SenderList> {
-		const uri = "/manage/customer/{{customerID}}/senders";
+		const uri = "/manage/organization/{{organizationID}}/senders";
 
 		return await this.executeRequest(uri, "GET", "list-sender", undefined, {
 			pagesize: pageSize.toString(),
@@ -233,7 +233,7 @@ export class NotificationsManageClient {
 	 * Get a sender record.
 	 */
 	async getSender(senderID:string):Promise<Types.Sender> {
-		const uri = `/manage/customer/{{customerID}}/sender/${encodeURIComponent(senderID)}`;
+		const uri = `/manage/organization/{{organizationID}}/sender/${encodeURIComponent(senderID)}`;
 
 		return await this.executeRequest<Types.Sender>(uri, "GET", "get-sender");
 	}
@@ -242,7 +242,7 @@ export class NotificationsManageClient {
 	 * Creates a new sender.
 	 */
 	async createSender(sender:Types.CreateSenderData):Promise<Types.Sender> {
-		const uri = "/manage/customer/{{customerID}}/sender";
+		const uri = "/manage/organization/{{organizationID}}/sender";
 
 		return await this.executeRequest<Types.Sender>(uri, "POST", "create-sender", sender);
 	}
@@ -251,7 +251,7 @@ export class NotificationsManageClient {
 	 * Update an existing sender.
 	 */
 	async updateSender(senderID:string, sender:Types.UpdateSenderData):Promise<Types.Sender> {
-		const uri = `/manage/customer/{{customerID}}/sender/${encodeURIComponent(senderID)}`;
+		const uri = `/manage/organization/{{organizationID}}/sender/${encodeURIComponent(senderID)}`;
 
 		return await this.executeRequest<Types.Sender>(uri, "PATCH", "update-sender", sender);
 	}
@@ -260,7 +260,7 @@ export class NotificationsManageClient {
 	 * Delete an existing sender.
 	 */
 	async deleteSender(senderID:string):Promise<void> {
-		const uri = `/manage/customer/{{customerID}}/sender/${encodeURIComponent(senderID)}`;
+		const uri = `/manage/organization/{{organizationID}}/sender/${encodeURIComponent(senderID)}`;
 
 		return await this.executeRequest(uri, "DELETE", "delete-sender");
 	}
@@ -270,7 +270,7 @@ export class NotificationsManageClient {
 	 * Limits the number of records by pageSize and starting with the record at nextPageID.
 	 */
 	async getAppKeys(pageSize:number, nextPageID?:string):Promise<Types.AppKeyList> {
-		const uri = "/manage/customer/{{customerID}}/appkeys";
+		const uri = "/manage/organization/{{organizationID}}/appkeys";
 
 		return await this.executeRequest<Types.AppKeyList>(uri, "GET", "list-appkey", undefined, {
 			pagesize: pageSize.toString(),
@@ -282,7 +282,7 @@ export class NotificationsManageClient {
 	 * Get an app key record.
 	 */
 	async getAppKey(appKeyID:string):Promise<Types.AppKey> {
-		const uri = `/manage/customer/{{customerID}}/appkey/${encodeURIComponent(appKeyID)}`;
+		const uri = `/manage/organization/{{organizationID}}/appkey/${encodeURIComponent(appKeyID)}`;
 
 		return await this.executeRequest<Types.AppKey>(uri, "GET", "get-appkey");
 	}
@@ -291,7 +291,7 @@ export class NotificationsManageClient {
 	 * Creates a new app key.
 	 */
 	async createAppKey(appKey:Types.CreateAppKeyData):Promise<Types.AppKey> {
-		const uri = "/manage/customer/{{customerID}}/appkey";
+		const uri = "/manage/organization/{{organizationID}}/appkey";
 
 		return await this.executeRequest<Types.AppKey>(uri, "POST", "create-appkey", appKey);
 	}
@@ -300,7 +300,7 @@ export class NotificationsManageClient {
 	 * Update an existing app key.
 	 */
 	async updateAppKey(appKeyID:string, appKey:Types.UpdateAppKeyData):Promise<Types.AppKey> {
-		const uri = `/manage/customer/{{customerID}}/appkey/${encodeURIComponent(appKeyID)}`;
+		const uri = `/manage/organization/{{organizationID}}/appkey/${encodeURIComponent(appKeyID)}`;
 
 		return await this.executeRequest<Types.AppKey>(uri, "PATCH", "update-appkey", appKey);
 	}
@@ -309,7 +309,7 @@ export class NotificationsManageClient {
 	 * Delete an existing app key.
 	 */
 	async deleteAppKey(appKeyID:string):Promise<void> {
-		const uri = `/manage/customer/{{customerID}}/appkey/${encodeURIComponent(appKeyID)}`;
+		const uri = `/manage/organization/{{organizationID}}/appkey/${encodeURIComponent(appKeyID)}`;
 
 		return await this.executeRequest(uri, "DELETE", "delete-appkey");
 	}
@@ -319,7 +319,7 @@ export class NotificationsManageClient {
 	 * Limits the number of records by pageSize and starting with the record at nextPageID.
 	 */
 	async getBlocks(pageSize:number, nextPageID?:string):Promise<Types.BlockList> {
-		const uri = "/manage/customer/{{customerID}}/blocks";
+		const uri = "/manage/organization/{{organizationID}}/blocks";
 
 		return await this.executeRequest<Types.BlockList>(uri, "GET", "list-block", undefined, {
 			pagesize: pageSize.toString(),
@@ -331,7 +331,7 @@ export class NotificationsManageClient {
 	 * Get a block record.
 	 */
 	async getBlock(blockID:string):Promise<Types.Block> {
-		const uri = `/manage/customer/{{customerID}}/block/${encodeURIComponent(blockID)}`;
+		const uri = `/manage/organization/{{organizationID}}/block/${encodeURIComponent(blockID)}`;
 
 		return await this.executeRequest<Types.Block>(uri, "GET", "get-block");
 	}
@@ -340,7 +340,7 @@ export class NotificationsManageClient {
 	 * Creates a new block.
 	 */
 	async createBlock(block:Types.CreateBlockData):Promise<Types.Block> {
-		const uri = "/manage/customer/{{customerID}}/block";
+		const uri = "/manage/organization/{{organizationID}}/block";
 
 		return await this.executeRequest<Types.Block>(uri, "POST", "create-block", block);
 	}
@@ -349,7 +349,7 @@ export class NotificationsManageClient {
 	 * Delete a block.
 	 */
 	async deleteBlock(blockID:string):Promise<void> {
-		const uri = `/manage/customer/{{customerID}}/block/${encodeURIComponent(blockID)}`;
+		const uri = `/manage/organization/{{organizationID}}/block/${encodeURIComponent(blockID)}`;
 
 		await this.executeRequest(uri, "DELETE", "delete-block");
 	}
@@ -357,7 +357,7 @@ export class NotificationsManageClient {
 	// If there is a network response with JSON then a tuple is returned (boolean success, object jsonContent). If any exceptions are thrown they are not handled by this method.
 	private async executeRequest<T>(uri:string, method:string, contentTypeResource:string, requestBody?:unknown, queryParameters?:Record<string, string|undefined>|undefined):Promise<T> {
 		await this.initClient();
-		uri = uri.replace(/{{customerID}}/, encodeURIComponent(this.customerID!));
+		uri = uri.replace(/{{organizationID}}/, encodeURIComponent(this.organizationID!));
 
 		let qp = "";
 		if (queryParameters) {
@@ -415,16 +415,16 @@ export class NotificationsManageClient {
 		return responseBody as T;
 	}
 
-	// There must be a client id specified. If we don't have one then retrieve the value for the authenticated customer.
-	// This is called before each request to verify a customer ID is present
+	// There must be a client id specified. If we don't have one then retrieve the value for the authenticated organization.
+	// This is called before each request to verify a organization ID is present
 	private async initClient() {
 		if (this.initComplete) return;
 
-		this.initComplete = true;	// Mark init as complete before triggering the customer ID lookup or we get circular calls
+		this.initComplete = true;	// Mark init as complete before triggering the organization ID lookup or we get circular calls
 
 		try {
 			const dataItem = await this.getInfo();
-			this.customerID = dataItem.CustomerID;
+			this.organizationID = dataItem.OrganizationID;
 		} catch (ex) {
 			this.initComplete = false;
 

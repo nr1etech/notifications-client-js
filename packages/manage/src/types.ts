@@ -5,9 +5,9 @@ export interface NotificationsManageClientOptions {
 	authorizationToken: string;
 }
 
-export interface CustomerInfo {
+export interface OrganizationInfo {
 	Role: string;
-	CustomerID: string;
+	OrganizationID: string;
 	OrganizationName: string;
 	ApiKey: string;
 }
@@ -74,28 +74,28 @@ export interface CreateMessageResult {
 }
 
 // **********************
-// Customer Types
+// Organization Types
 
-export interface CustomerList {
-	Results: Customer[];
+export interface OrganizationList {
+	Results: Organization[];
 	NextPage: string | undefined;
 }
 
-export interface Customer {
-	CustomerID: string;
+export interface Organization {
+	OrganizationID: string;
 	ApiKey: string;
 	OrganizationName: string;
-	Status: CustomerStatus;
+	Status: OrganizationStatus;
 }
 
-export interface CreateCustomerData {
+export interface CreateOrganizationData {
 	OrganizationName: string;
 }
 
-export interface UpdateCustomerData {
+export interface UpdateOrganizationData {
 	OrganizationName?: string;
 	ApiKey?: string;
-	Status?: CustomerStatus;
+	Status?: OrganizationStatus;
 }
 
 // **********************
@@ -246,7 +246,7 @@ export enum MessageStatus {
 	Failure = "failure",
 }
 
-export enum CustomerStatus {
+export enum OrganizationStatus {
 	Active = "active",
 	Inactive = "inactive",
 }
