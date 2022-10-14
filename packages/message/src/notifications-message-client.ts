@@ -96,7 +96,7 @@ export class NotificationsMessageClient {
 		}
 
 		if (response.status != 200) {
-			throw new ResponseError((responseBody as ErrorResponse).Error ?? responseBodyText);
+			throw new ResponseError((responseBody as ErrorResponse).error ?? responseBodyText);
 		}
 
 		return responseBody as SendResponse;
@@ -113,11 +113,11 @@ export class NotificationsMessageClient {
 }
 
 interface ErrorResponse extends Record<string, unknown> {
-	Error: string|undefined;
+	error: string|undefined;
 }
 
 export interface SendResponse {
-	MessageID: string,
+	messageID: string,
 }
 export interface NotificationsMessageClientOptions { authorizationToken: string }
 

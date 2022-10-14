@@ -409,7 +409,7 @@ export class NotificationsManageClient {
 		}
 
 		if (response.status != 200) {
-			throw new Errors.ResponseError((responseBody as ErrorResponse).Error ?? responseBodyText);
+			throw new Errors.ResponseError((responseBody as ErrorResponse).error ?? responseBodyText);
 		}
 
 		return responseBody as T;
@@ -424,7 +424,7 @@ export class NotificationsManageClient {
 
 		try {
 			const dataItem = await this.getInfo();
-			this.organizationID = dataItem.OrganizationID;
+			this.organizationID = dataItem.organizationID;
 		} catch (ex) {
 			this.initComplete = false;
 
@@ -446,5 +446,5 @@ export class NotificationsManageClient {
 }
 
 interface ErrorResponse extends Record<string, unknown> {
-	Error:string|undefined;
+	error:string|undefined;
 }
