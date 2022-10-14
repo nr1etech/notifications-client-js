@@ -35,29 +35,14 @@ export class NotificationsMessageClient {
 	 * Queue an Email Message for sending
 	 */
 	async sendEmail(message:EmailMessage):Promise<SendResponse> {
-		return await this.executeRequest("/message/email", "create-email", {
-			TemplateSlug: message.templateSlug,
-			TemplateLocale: message.templateLocale,
-			Recipient: {
-				Name: message.recipient.name,
-				Email: message.recipient.email,
-			},
-			MergeValues: message.mergeValues
-		});
+		return await this.executeRequest("/message/email", "create-email", message);
 	}
 
 	/**
 	 * Queue an SMS Message for sending
 	 */
 	async sendSms(message:SmsMessage):Promise<SendResponse> {
-		return await this.executeRequest("/message/sms", "create-sms", {
-			TemplateSlug: message.templateSlug,
-			TemplateLocale: message.templateLocale,
-			Recipient: {
-				Phone: message.recipient.phone,
-			},
-			MergeValues: message.mergeValues,
-		});
+		return await this.executeRequest("/message/sms", "create-sms", message);
 	}
 
 	private async executeRequest(uri:string, contentTypeResource:string, message:unknown):Promise<SendResponse> {
