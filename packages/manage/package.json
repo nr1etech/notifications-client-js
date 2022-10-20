@@ -3,7 +3,7 @@
 	"publishConfig": {
 		"access": "public"
 	},
-	"version": "0.1.10-alpha.0",
+	"version": "0.1.10",
 	"description": "Notifications Manage API Javascript client",
 	"author": "",
 	"homepage": "",
