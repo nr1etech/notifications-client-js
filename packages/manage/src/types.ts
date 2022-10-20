@@ -233,64 +233,64 @@ export interface CreateBlockData {
 // Enums
 
 export enum MessageType {
-	email = "email",
-	sms = "sms",
+	Email = "email",
+	Sms = "sms",
 }
 
 export enum MessageStatus {
-	created = "created",
-	pending = "pending",
-	sending = "sending",
-	sent = "sent",
-	success = "success",
-	failure = "failure",
+	Created = "created",
+	Pending = "pending",
+	Sending = "sending",
+	Sent = "sent",
+	Success = "success",
+	Failure = "failure",
 }
 
 export enum OrganizationStatus {
-	active = "active",
-	inactive = "inactive",
+	Active = "active",
+	Inactive = "inactive",
 }
 
 export enum TemplateStatus {
-	active = "active",
-	inactive = "inactive",
+	Active = "active",
+	Inactive = "inactive",
 }
 
 export enum TemplateStage {
-	published = "published",
-	draft = "draft",
+	Published = "published",
+	Draft = "draft",
 }
 
 export enum SenderStatus {
-	active = "active",
-	inactive = "inactive",
+	Active = "active",
+	Inactive = "inactive",
 }
 
 export enum ServiceProvider {
-	twilio = "twilio",
-	sendGrid = "sendgrid",
-	emailIntegrationTest = "email-integration-test",
-	smsIntegrationTest = "sms-integration-test",
+	Twilio = "twilio",
+	SendGrid = "sendgrid",
+	EmailIntegrationTest = "email-integration-test",
+	SmsIntegrationTest = "sms-integration-test",
 }
 
 export enum AppKeyStatus {
-	active = "active",
-	inactive = "inactive",
+	Active = "active",
+	Inactive = "inactive",
 }
 
 export enum AppKeyType {
-	messaging = "messaging",
-	webhook = "webhook",
-	management = "management",
-	admin = "admin",
-	messagingTest = "messaging-test",
+	Messaging = "messaging",
+	Webhook = "webhook",
+	Management = "management",
+	Admin = "admin",
+	MessagingTest = "messaging-test",
 }
 
 export enum BlockReasonType {
-	spam = "spam",
-	bounce = "bounce",
-	blocked = "blocked",
-	optOut = "optout",
-	other = "other",
-	manual = "manual",
+	Spam = "spam",
+	Bounce = "bounce",
+	Blocked = "blocked",
+	OptOut = "optout",
+	Other = "other",
+	Manual = "manual",
 }
