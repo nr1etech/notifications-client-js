@@ -6,7 +6,6 @@ export class NotificationsManageClient {
 	private baseUrl:string;
 	private authorizationToken:string;
 	private organizationID:string|undefined;
-	private initComplete:boolean = false;
 
 	constructor(baseUrl:string, options:Types.NotificationsManageClientOptions) {
 		baseUrl = baseUrl.endsWith("/") ? baseUrl.slice(0, -1) : baseUrl;	// remove trailing slash
@@ -25,38 +24,28 @@ export class NotificationsManageClient {
 	}
 
 	/**
-	 * Set the authorization token. Used by all future requests.
+	 * Set the authorization token.
 	 */
 	setAuthorizationToken(authorizationToken:string):void {
 		this.authorizationToken = authorizationToken;
 	}
 
-	/**
-	 * Set the Organization ID that will be passed to all API requests.
-	 */
-	configureForOverrideOrganization(organizationID:string):void {
+	setOrganizationID(organizationID:string):void {
 		this.organizationID = organizationID;
 	}
 
 	/**
-	 * Remove the Organization ID. The organization for the Authorization Token will be used for requests.
+	 * Get an info object for the authorized user. This call can be made without setting the client organizationID.
+	 * This method can be used to get a list of valid organization IDs for the authenticated user.
 	 */
-	clearOverrideOrganization() {
-		this.organizationID = undefined;
-		this.initComplete = false;
-	}
-
-	/**
-	 * Get an info object for the authorized organization.
-	 */
-	async getInfo():Promise<Types.OrganizationInfo> {
+	async getInfo():Promise<Types.AuthenticatedUserInfo> {
 		const uri = "/manage/info";
 
-		return await this.executeRequest<Types.OrganizationInfo>(uri, "GET", "get-info");
+		return await this.executeRequest<Types.AuthenticatedUserInfo>(uri, "GET", "get-info");
 	}
 
 	/**
-	 * Generates a valid Webhook key.
+	 * Generates a valid Webhook key. This call can be made without an organization ID.
 	 */
 	async generateWebhookKey():Promise<Types.KeyResult> {
 		const uri = "/manage/key/webhook";
@@ -115,7 +104,7 @@ export class NotificationsManageClient {
 	}
 
 	/**
-	 * Get a list of organizations. Only an admin app key can make this request.
+	 * Get a list of organizations. Only an admin app key can make this request. This call can be made without setting the client organizationID.
 	 * Limits the number of records by pageSize and starting with the record at nextPageID.
 	 */
 	async getOrganizations(pageSize:number, nextPageID?:string):Promise<Types.OrganizationList> {
@@ -128,7 +117,7 @@ export class NotificationsManageClient {
 	}
 
 	/**
-	 * Get an organization record. Only an admin app key can get organization records other than its own.
+	 * Get an organization record. This call can be made without setting the client organizationID. Only an admin app key can get organization records other than its own.
 	 */
 	async getOrganization(organizationID:string):Promise<Types.Organization> {
 		const uri = `/manage/organization/${encodeURIComponent(organizationID)}`;
@@ -137,7 +126,7 @@ export class NotificationsManageClient {
 	}
 
 	/**
-	 * Creates a new organization. Only an admin app key can create organizations.
+	 * Creates a new organization. This call can be made without setting the client organizationID. Only an admin app key can create organizations.
 	 */
 	async createOrganization(organization:Types.CreateOrganizationData):Promise<Types.Organization> {
 		const uri = "/manage/organization";	// This URI is different. We don't embed the client organization id because the create organization endpoint does not use it.
@@ -146,7 +135,7 @@ export class NotificationsManageClient {
 	}
 
 	/**
-	 * Update an existing organization.
+	 * Update an existing organization. This call can be made without setting the client organizationID.
 	 */
 	async updateOrganization(organizationID:string, organization:Types.UpdateOrganizationData):Promise<Types.Organization> {
 		const uri = `/manage/organization/${encodeURIComponent(organizationID)}`;	// This URI is different. We don't embed the client organization id because the update organization endpoint does use it.
@@ -155,7 +144,7 @@ export class NotificationsManageClient {
 	}
 
 	/**
-	 * Delete an existing organization.
+	 * Delete an existing organization. This call can be made without setting the client organizationID.
 	 */
 	async deleteOrganization(organizationID:string):Promise<void> {
 		const uri = `/manage/organization/${encodeURIComponent(organizationID)}`;	// This URI is different. We don't embed the client organization id because the update organization endpoint does use it.
@@ -354,8 +343,10 @@ export class NotificationsManageClient {
 
 	// If there is a network response with JSON then a tuple is returned (boolean success, object jsonContent). If any exceptions are thrown they are not handled by this method.
 	private async executeRequest<T>(uri:string, method:string, contentTypeResource:string, requestBody?:unknown, queryParameters?:Record<string, string|undefined>|undefined):Promise<T> {
-		await this.initClient();
-		uri = uri.replace(/{{organizationID}}/, encodeURIComponent(this.organizationID!));
+		if (uri.includes("{{organizationID")) {
+			if (!this.organizationID) throw new Errors.InitError("Required organizationID has not been set.");
+			uri = uri.replace(/{{organizationID}}/, encodeURIComponent(this.organizationID));
+		}
 
 		let qp = "";
 		if (queryParameters) {
@@ -407,30 +398,10 @@ export class NotificationsManageClient {
 		}
 
 		if (response.status != 200) {
-			throw new Errors.ResponseError((responseBody as ErrorResponse).error ?? responseBodyText);
+			throw new Errors.ResponseError((responseBody as Types.ErrorResponse).error ?? responseBodyText);
 		}
 
 		return responseBody as T;
-	}
-
-	// There must be a client id specified. If we don't have one then retrieve the value for the authenticated organization.
-	// This is called before each request to verify an organization ID is present
-	private async initClient() {
-		if (this.initComplete) return;
-
-		this.initComplete = true;	// Mark init as complete before triggering the organization ID lookup or we get circular calls
-
-		try {
-			const dataItem = await this.getInfo();
-			this.organizationID = dataItem.organizationID;
-		} catch (ex) {
-			this.initComplete = false;
-
-			const error = ex as Error;
-
-			if (error instanceof Errors.AuthorizationError) throw error;
-			else throw new Errors.InitError(`Failed to init client: ${error.message}`, { cause: error });
-		}
 	}
 
 	private isUrl(value:string):boolean {
@@ -441,8 +412,4 @@ export class NotificationsManageClient {
 
 		return false;
 	}
-}
-
-interface ErrorResponse extends Record<string, unknown> {
-	error:string|undefined;
 }

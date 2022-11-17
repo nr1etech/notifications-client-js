@@ -5,7 +5,11 @@ export interface NotificationsManageClientOptions {
 	authorizationToken: string;
 }
 
-export interface OrganizationInfo {
+export interface AuthenticatedUserInfo {
+	users: UserInfo[];
+}
+
+export interface UserInfo {
 	organizationID: string;
 	organizationName: string;
 	userDescription: string;
@@ -14,6 +18,10 @@ export interface OrganizationInfo {
 
 export interface KeyResult {
 	key: string;
+}
+
+export interface ErrorResponse extends Record<string, unknown> {
+	error:string|undefined;
 }
 
 // **********************
@@ -94,7 +102,6 @@ export interface CreateOrganizationData {
 
 export interface UpdateOrganizationData {
 	organizationName?: string;
-	apiKey?: string;
 	status?: OrganizationStatus;
 }
 
@@ -297,19 +304,6 @@ export enum ServiceProvider {
 	SendGrid = "sendgrid",
 	EmailIntegrationTest = "email-integration-test",
 	SmsIntegrationTest = "sms-integration-test",
-}
-
-export enum AppKeyStatus {
-	Active = "active",
-	Inactive = "inactive",
-}
-
-export enum AppKeyType {
-	Messaging = "messaging",
-	Webhook = "webhook",
-	Management = "management",
-	Admin = "admin",
-	MessagingTest = "messaging-test",
 }
 
 export enum BlockReasonType {
