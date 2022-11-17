@@ -128,14 +128,10 @@ export class NotificationsManageClient {
 	}
 
 	/**
-	 * Get a organization record. Only an admin app key can get organization records other than its own.
+	 * Get an organization record. Only an admin app key can get organization records other than its own.
 	 */
-	async getOrganization(organizationID?:string|undefined):Promise<Types.Organization> {
-		let uri = "/manage/organization";	// This URI is different. We don't embed the client organization id because the get organization endpoint does not use it.
-
-		if (organizationID != undefined) {
-			uri += "/" + encodeURIComponent(organizationID);
-		}
+	async getOrganization(organizationID:string):Promise<Types.Organization> {
+		const uri = `/manage/organization/${encodeURIComponent(organizationID)}`;
 
 		return await this.executeRequest<Types.Organization>(uri, "GET", "get-organization");
 	}
@@ -418,7 +414,7 @@ export class NotificationsManageClient {
 	}
 
 	// There must be a client id specified. If we don't have one then retrieve the value for the authenticated organization.
-	// This is called before each request to verify a organization ID is present
+	// This is called before each request to verify an organization ID is present
 	private async initClient() {
 		if (this.initComplete) return;
 

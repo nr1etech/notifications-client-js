@@ -39,14 +39,14 @@ export class NotificationsMessageClient {
 	 * Queue an Email Message for sending
 	 */
 	async sendEmail(message:EmailMessage):Promise<SendResponse> {
-		return await this.executeRequest(`/message/${this.organizationID}/email`, "create-email", message);
+		return await this.executeRequest(`/message/${encodeURIComponent(this.organizationID)}/email`, "create-email", message);
 	}
 
 	/**
 	 * Queue an SMS Message for sending
 	 */
 	async sendSms(message:SmsMessage):Promise<SendResponse> {
-		return await this.executeRequest(`/message/${this.organizationID}/sms`, "create-sms", message);
+		return await this.executeRequest(`/message/${encodeURIComponent(this.organizationID)}/sms`, "create-sms", message);
 	}
 
 	private async executeRequest(uri:string, contentTypeResource:string, message:unknown):Promise<SendResponse> {
