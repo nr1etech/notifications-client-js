@@ -6,14 +6,14 @@ export interface NotificationsManageClientOptions {
 }
 
 export interface OrganizationInfo {
-	role: string;
 	organizationID: string;
 	organizationName: string;
-	apiKey: string;
+	userDescription: string;
+	userType: UserType;
 }
 
-export interface ApiKeyResult {
-	apiKey: string;
+export interface KeyResult {
+	key: string;
 }
 
 // **********************
@@ -27,12 +27,13 @@ export interface MessageList {
 export interface Message {
 	messageID: string;
 	type: MessageType;
+	sentByUserID: string;
+	senderID: string;
 	messageStatus: MessageStatus;
 	serviceProvider: ServiceProvider;
-	senderID: string;
-	senderMessageID?: string;
-	senderStatus?: string;
-	senderStatusMessage?: string;
+	serviceProviderMessageID?: string;
+	serviceProviderStatus?: string;
+	serviceProviderStatusMessage?: string;
 	templateID: string;
 	templateSlug: string;
 	templateLocale: string;
@@ -83,7 +84,6 @@ export interface OrganizationList {
 
 export interface Organization {
 	organizationID: string;
-	apiKey: string;
 	organizationName: string;
 	status: OrganizationStatus;
 }
@@ -96,6 +96,41 @@ export interface UpdateOrganizationData {
 	organizationName?: string;
 	apiKey?: string;
 	status?: OrganizationStatus;
+}
+
+// **********************
+// User Types
+export interface UserList {
+	result: User[];
+	nextPage: string | undefined;
+}
+
+export interface User {
+	userID: string;
+	description: string;
+	organizationName: string;
+	status: UserStatus;
+	identity: string|undefined;
+	type: UserType;
+	class: UserClass;
+	inviteToken?: string;
+	inviteTokenExpirationDate?: string;
+}
+
+export interface CreateUserData {
+	description: string;
+	identity?: string;
+	type: UserType;
+	class: UserClass;
+	inviteToken?: string;
+}
+
+export interface UpdateUserData {
+	description?: string;
+	status?: UserStatus;
+	identity?: string;
+	type?: UserType;
+	inviteToken?: string;
 }
 
 // **********************
@@ -160,6 +195,7 @@ export interface Sender {
 	priority: number;
 	serviceProvider: ServiceProvider;
 	senderConfiguration: Record<string, unknown>;
+	webhookKey: string;
 }
 
 export interface CreateSenderData {
@@ -178,33 +214,6 @@ export interface UpdateSenderData {
 	priority?: number;
 	serviceProvider?: ServiceProvider;
 	senderConfiguration?: Record<string, unknown>;
-}
-
-// **********************
-// AppKey Types
-
-export interface AppKeyList {
-	results: AppKey[];
-	nextPage: string | undefined;
-}
-
-export interface AppKey {
-	appKeyID: string;
-	name: string;
-	type: AppKeyType;
-	status: AppKeyStatus;
-	appKey: string;
-	keySnippet: string;
-}
-
-export interface CreateAppKeyData {
-	name: string;
-	type: AppKeyType;
-}
-
-export interface UpdateAppKeyData {
-	name?: string;
-	status?: AppKeyStatus;
 }
 
 // **********************
@@ -247,6 +256,23 @@ export enum MessageStatus {
 }
 
 export enum OrganizationStatus {
+	Active = "active",
+	Inactive = "inactive",
+}
+
+export enum UserType {
+	GlobalAdmin = "global-admin",
+	Management = "management",
+	Messaging = "messaging",
+	MessagingTest = "messaging-test",
+}
+
+export enum UserClass {
+	Person = "person",
+	Client = "client",
+}
+
+export enum UserStatus {
 	Active = "active",
 	Inactive = "inactive",
 }

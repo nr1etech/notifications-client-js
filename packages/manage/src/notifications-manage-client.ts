@@ -56,12 +56,12 @@ export class NotificationsManageClient {
 	}
 
 	/**
-	 * Generates a valid API key.
+	 * Generates a valid Webhook key.
 	 */
-	async generateApiKey():Promise<Types.ApiKeyResult> {
-		const uri = "/manage/apikey";
+	async generateWebhookKey():Promise<Types.KeyResult> {
+		const uri = "/manage/key/webhook";
 
-		return await this.executeRequest<Types.ApiKeyResult>(uri, "POST", "create-apikey");
+		return await this.executeRequest<Types.KeyResult>(uri, "POST", "create-key");
 	}
 
 	/**
@@ -168,6 +168,56 @@ export class NotificationsManageClient {
 	}
 
 	/**
+	 * Get a list of users.
+	 * Limits the number of records by pageSize and starting with the record at nextPageID.
+	 */
+	async getUsers(pageSize:number, nextPageID?:string):Promise<Types.UserList> {
+		const uri = "/manage/organization/{{organizationID}}/users";
+
+		return await this.executeRequest<Types.UserList>(uri, "GET", "list-user", undefined, {
+			pagesize: pageSize.toString(),
+			nextpage: nextPageID,
+		});
+	}
+
+	/**
+	 * Get a user record.
+	 */
+	async getUser(userID:string):Promise<Types.User> {
+		const uri = `/manage/organization/{{organizationID}}/user/${encodeURIComponent(userID)}`;
+
+		return await this.executeRequest<Types.User>(uri, "GET", "get-user");
+	}
+
+	/**
+	 * Creates a new user.
+	 */
+	async createUser(user:Types.CreateUserData):Promise<Types.User> {
+		const uri = "/manage/organization/{{organizationID}}/user";
+
+		return await this.executeRequest<Types.User>(uri, "POST", "create-user", user);
+	}
+
+	/**
+	 * Update an existing user.
+	 */
+	async updateUser(userID:string, user:Types.UpdateUserData):Promise<Types.User> {
+		const uri = `/manage/organization/{{organizationID}}/user/${encodeURIComponent(userID)}`;
+
+		return await this.executeRequest<Types.User>(uri, "PATCH", "update-user", user);
+	}
+
+	/**
+	 * Delete an existing user.
+	 */
+	async deleteUser(userID:string):Promise<void> {
+		const uri = `/manage/organization/{{organizationID}}/user/${encodeURIComponent(userID)}`;
+
+		return await this.executeRequest(uri, "DELETE", "delete-user");
+	}
+
+
+	/**
 	 * Get a list of templates.
 	 * Limits the number of records by pageSize and starting with the record at nextPageID.
 	 */
@@ -265,54 +315,6 @@ export class NotificationsManageClient {
 		return await this.executeRequest(uri, "DELETE", "delete-sender");
 	}
 
-	/**
-	 * Get a list of app keys.
-	 * Limits the number of records by pageSize and starting with the record at nextPageID.
-	 */
-	async getAppKeys(pageSize:number, nextPageID?:string):Promise<Types.AppKeyList> {
-		const uri = "/manage/organization/{{organizationID}}/appkeys";
-
-		return await this.executeRequest<Types.AppKeyList>(uri, "GET", "list-appkey", undefined, {
-			pagesize: pageSize.toString(),
-			nextpage: nextPageID,
-		});
-	}
-
-	/**
-	 * Get an app key record.
-	 */
-	async getAppKey(appKeyID:string):Promise<Types.AppKey> {
-		const uri = `/manage/organization/{{organizationID}}/appkey/${encodeURIComponent(appKeyID)}`;
-
-		return await this.executeRequest<Types.AppKey>(uri, "GET", "get-appkey");
-	}
-
-	/**
-	 * Creates a new app key.
-	 */
-	async createAppKey(appKey:Types.CreateAppKeyData):Promise<Types.AppKey> {
-		const uri = "/manage/organization/{{organizationID}}/appkey";
-
-		return await this.executeRequest<Types.AppKey>(uri, "POST", "create-appkey", appKey);
-	}
-
-	/**
-	 * Update an existing app key.
-	 */
-	async updateAppKey(appKeyID:string, appKey:Types.UpdateAppKeyData):Promise<Types.AppKey> {
-		const uri = `/manage/organization/{{organizationID}}/appkey/${encodeURIComponent(appKeyID)}`;
-
-		return await this.executeRequest<Types.AppKey>(uri, "PATCH", "update-appkey", appKey);
-	}
-
-	/**
-	 * Delete an existing app key.
-	 */
-	async deleteAppKey(appKeyID:string):Promise<void> {
-		const uri = `/manage/organization/{{organizationID}}/appkey/${encodeURIComponent(appKeyID)}`;
-
-		return await this.executeRequest(uri, "DELETE", "delete-appkey");
-	}
 
 	/**
 	 * Get a list of blocks.
