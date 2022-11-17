@@ -4,17 +4,21 @@ import fetch, { Response } from "node-fetch";
 export class NotificationsMessageClient {
 	private baseUrl:string;
 	private authorizationToken:string;
+	private organizationID: string;
 
 	/**
 	 * Notification Messaging service client.
 	 */
-	constructor(baseUrl: string, options: NotificationsMessageClientOptions) {
-		baseUrl = baseUrl.endsWith("/") ? baseUrl.slice(0, -1) : baseUrl;	// remove trailing slash
-
+	constructor(options: NotificationsMessageClientOptions) {
+		const baseUrl = options.baseUrl.endsWith("/") ? options.baseUrl.slice(0, -1) : options.baseUrl;	// remove trailing slash
 		if (!this.isUrl(baseUrl)) throw new ArgumentError("baseUrl is invalid.");
-
 		this.baseUrl = baseUrl;
+
+		if (!options.authorizationToken) throw new ArgumentError("authorizatonToken is invalid.");
 		this.authorizationToken = options.authorizationToken;
+
+		if (!options.organizationID) throw new ArgumentError("organizationID is invalid.");
+		this.organizationID = options.organizationID;
 	}
 
 	/**
@@ -35,14 +39,14 @@ export class NotificationsMessageClient {
 	 * Queue an Email Message for sending
 	 */
 	async sendEmail(message:EmailMessage):Promise<SendResponse> {
-		return await this.executeRequest("/message/email", "create-email", message);
+		return await this.executeRequest(`/message/${this.organizationID}/email`, "create-email", message);
 	}
 
 	/**
 	 * Queue an SMS Message for sending
 	 */
 	async sendSms(message:SmsMessage):Promise<SendResponse> {
-		return await this.executeRequest("/message/sms", "create-sms", message);
+		return await this.executeRequest(`/message/${this.organizationID}/sms`, "create-sms", message);
 	}
 
 	private async executeRequest(uri:string, contentTypeResource:string, message:unknown):Promise<SendResponse> {
@@ -102,9 +106,13 @@ interface ErrorResponse extends Record<string, unknown> {
 }
 
 export interface SendResponse {
-	messageID: string,
+	messageID: string;
 }
-export interface NotificationsMessageClientOptions { authorizationToken: string }
+export interface NotificationsMessageClientOptions {
+	baseUrl: string;
+	authorizationToken: string;
+	organizationID: string;
+}
 
 export class EmailRecipient {
 	name: string;

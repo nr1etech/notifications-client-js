@@ -101,7 +101,7 @@ export interface UpdateOrganizationData {
 // **********************
 // User Types
 export interface UserList {
-	result: User[];
+	results: User[];
 	nextPage: string | undefined;
 }
 
