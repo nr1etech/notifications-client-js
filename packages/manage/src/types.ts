@@ -114,30 +114,29 @@ export interface UserList {
 
 export interface User {
 	userID: string;
+	userName: string|undefined;
 	description: string;
 	organizationName: string;
 	status: UserStatus;
 	identity: string|undefined;
 	type: UserType;
 	class: UserClass;
-	inviteToken?: string;
-	inviteTokenExpirationDate?: string;
 }
 
 export interface CreateUserData {
+	userName: string|undefined;
 	description: string;
 	identity?: string;
 	type: UserType;
 	class: UserClass;
-	inviteToken?: string;
 }
 
 export interface UpdateUserData {
+	userName?: string;
 	description?: string;
 	status?: UserStatus;
 	identity?: string;
 	type?: UserType;
-	inviteToken?: string;
 }
 
 // **********************
