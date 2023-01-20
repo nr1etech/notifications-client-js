@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+echo "Cleaning lerna logs, package output and all node_modules..."
+
 rm -rf ./lerna-debug.log
 
 rm -rf ./node_modules
