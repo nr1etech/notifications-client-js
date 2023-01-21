@@ -44,6 +44,12 @@ export class NotificationsManageClient {
 		return await this.executeRequest<Types.AuthenticatedUserInfo>(uri, "GET", "get-info");
 	}
 
+	async registerUser(registrationInfo:Types.RegistrationInfo):Promise<void> {
+		const uri = "/manage/info";
+
+		return await this.executeRequest(uri, "POST", "create-info", registrationInfo);
+	}
+
 	/**
 	 * Generates a valid Webhook key. This call can be made without an organization ID.
 	 */

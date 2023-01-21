@@ -16,6 +16,10 @@ export interface UserInfo {
 	userType: UserType;
 }
 
+export interface RegistrationInfo {
+	id_token: string;
+}
+
 export interface KeyResult {
 	key: string;
 }
