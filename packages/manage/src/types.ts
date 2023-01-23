@@ -12,6 +12,7 @@ export interface AuthenticatedUserInfo {
 export interface UserInfo {
 	organizationID: string;
 	organizationName: string;
+	userID: string;
 	userDescription: string;
 	userType: UserType;
 }
