@@ -35,16 +35,16 @@ export class NotificationsManageClient {
 	}
 
 	/**
-	 * Get an info object for the authorized user. This call can be made without setting the client organizationID.
-	 * This method can be used to get a list of valid organization IDs for the authenticated user.
+	 * Get an info object for the authorized account. This call can be made without setting the client organizationID.
+	 * This method can be used to get a list of valid organization IDs for the authenticated account.
 	 */
-	async getInfo():Promise<Types.AuthenticatedUserInfo> {
+	async getInfo():Promise<Types.AuthenticatedAccountInfo> {
 		const uri = "/manage/info";
 
-		return await this.executeRequest<Types.AuthenticatedUserInfo>(uri, "GET", "get-info");
+		return await this.executeRequest<Types.AuthenticatedAccountInfo>(uri, "GET", "get-info");
 	}
 
-	async registerUser(registrationInfo:Types.RegistrationInfo):Promise<void> {
+	async registerAccount(registrationInfo:Types.RegistrationInfo):Promise<void> {
 		const uri = "/manage/info";
 
 		return await this.executeRequest(uri, "POST", "create-info", registrationInfo);
@@ -159,52 +159,52 @@ export class NotificationsManageClient {
 	}
 
 	/**
-	 * Get a list of users.
+	 * Get a list of accounts.
 	 * Limits the number of records by pageSize and starting with the record at nextPageID.
 	 */
-	async getUsers(pageSize:number, nextPageID?:string):Promise<Types.UserList> {
-		const uri = "/manage/organization/{{organizationID}}/users";
+	async getAccounts(pageSize:number, nextPageID?:string):Promise<Types.AccountList> {
+		const uri = "/manage/organization/{{organizationID}}/accounts";
 
-		return await this.executeRequest<Types.UserList>(uri, "GET", "list-user", undefined, {
+		return await this.executeRequest<Types.AccountList>(uri, "GET", "list-account", undefined, {
 			pagesize: pageSize.toString(),
 			nextpage: nextPageID,
 		});
 	}
 
 	/**
-	 * Get a user record.
+	 * Get a account record.
 	 */
-	async getUser(userID:string):Promise<Types.User> {
-		const uri = `/manage/organization/{{organizationID}}/user/${encodeURIComponent(userID)}`;
+	async getAccount(accountID:string):Promise<Types.Account> {
+		const uri = `/manage/organization/{{organizationID}}/account/${encodeURIComponent(accountID)}`;
 
-		return await this.executeRequest<Types.User>(uri, "GET", "get-user");
+		return await this.executeRequest<Types.Account>(uri, "GET", "get-account");
 	}
 
 	/**
-	 * Creates a new user.
+	 * Creates a new account.
 	 */
-	async createUser(user:Types.CreateUserData):Promise<Types.User> {
-		const uri = "/manage/organization/{{organizationID}}/user";
+	async createAccount(account:Types.CreateAccountData):Promise<Types.Account> {
+		const uri = "/manage/organization/{{organizationID}}/account";
 
-		return await this.executeRequest<Types.User>(uri, "POST", "create-user", user);
+		return await this.executeRequest<Types.Account>(uri, "POST", "create-account", account);
 	}
 
 	/**
-	 * Update an existing user.
+	 * Update an existing account.
 	 */
-	async updateUser(userID:string, user:Types.UpdateUserData):Promise<Types.User> {
-		const uri = `/manage/organization/{{organizationID}}/user/${encodeURIComponent(userID)}`;
+	async updateAccount(accountID:string, account:Types.UpdateAccountData):Promise<Types.Account> {
+		const uri = `/manage/organization/{{organizationID}}/account/${encodeURIComponent(accountID)}`;
 
-		return await this.executeRequest<Types.User>(uri, "PATCH", "update-user", user);
+		return await this.executeRequest<Types.Account>(uri, "PATCH", "update-account", account);
 	}
 
 	/**
-	 * Delete an existing user.
+	 * Delete an existing account.
 	 */
-	async deleteUser(userID:string):Promise<void> {
-		const uri = `/manage/organization/{{organizationID}}/user/${encodeURIComponent(userID)}`;
+	async deleteAccount(accountID:string):Promise<void> {
+		const uri = `/manage/organization/{{organizationID}}/account/${encodeURIComponent(accountID)}`;
 
-		return await this.executeRequest(uri, "DELETE", "delete-user");
+		return await this.executeRequest(uri, "DELETE", "delete-account");
 	}
 
 

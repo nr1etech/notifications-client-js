@@ -16,5 +16,5 @@ const manageClient = new NotificationsManageClient(baseUrl, {
 	authorizationToken: "abcd-1234",
 });
 
-const userInfo = await manageClient.getInfo();
+const accountInfo = await manageClient.getInfo();
 ```

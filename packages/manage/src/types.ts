@@ -5,16 +5,16 @@ export interface NotificationsManageClientOptions {
 	authorizationToken: string;
 }
 
-export interface AuthenticatedUserInfo {
-	users: UserInfo[];
+export interface AuthenticatedAccountInfo {
+	accounts: AccountInfo[];
 }
 
-export interface UserInfo {
+export interface AccountInfo {
 	organizationID: string;
 	organizationName: string;
-	userID: string;
-	userDescription: string;
-	userType: UserType;
+	accountID: string;
+	accountDescription: string;
+	accountRole: AccountRole;
 }
 
 export interface RegistrationInfo {
@@ -40,7 +40,7 @@ export interface MessageList {
 export interface Message {
 	messageID: string;
 	type: MessageType;
-	sentByUserID: string;
+	sentByAccountID: string;
 	senderID: string;
 	messageStatus: MessageStatus;
 	serviceProvider: ServiceProvider;
@@ -111,37 +111,37 @@ export interface UpdateOrganizationData {
 }
 
 // **********************
-// User Types
-export interface UserList {
-	results: User[];
+// Account Types
+export interface AccountList {
+	results: Account[];
 	nextPage: string | undefined;
 }
 
-export interface User {
-	userID: string;
+export interface Account {
+	accountID: string;
 	userName: string|undefined;
 	description: string;
 	organizationName: string;
-	status: UserStatus;
+	status: AccountStatus;
 	identity: string|undefined;
-	type: UserType;
-	class: UserClass;
+	role: AccountRole;
+	type: AccountType;
 }
 
-export interface CreateUserData {
+export interface CreateAccountData {
 	userName: string|undefined;
 	description: string;
 	identity?: string;
-	type: UserType;
-	class: UserClass;
+	role: AccountRole;
+	type: AccountType;
 }
 
-export interface UpdateUserData {
+export interface UpdateAccountData {
 	userName?: string;
 	description?: string;
-	status?: UserStatus;
+	status?: AccountStatus;
 	identity?: string;
-	type?: UserType;
+	role?: AccountRole;
 }
 
 // **********************
@@ -271,19 +271,19 @@ export enum OrganizationStatus {
 	Inactive = "inactive",
 }
 
-export enum UserType {
+export enum AccountRole {
 	GlobalAdmin = "global-admin",
 	Management = "management",
 	Messaging = "messaging",
 	MessagingTest = "messaging-test",
 }
 
-export enum UserClass {
-	Person = "person",
+export enum AccountType {
+	User = "user",
 	Client = "client",
 }
 
-export enum UserStatus {
+export enum AccountStatus {
 	Active = "active",
 	Inactive = "inactive",
 }
