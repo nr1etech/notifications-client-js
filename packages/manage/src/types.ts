@@ -125,7 +125,7 @@ export interface Account {
 	status: AccountStatus;
 	identity: string|undefined;
 	role: AccountRole;
-	type: AccountType;
+	accountType: AccountType;
 }
 
 export interface CreateAccountData {
@@ -133,7 +133,7 @@ export interface CreateAccountData {
 	description: string;
 	identity?: string;
 	role: AccountRole;
-	type: AccountType;
+	accountType: AccountType;
 }
 
 export interface UpdateAccountData {
