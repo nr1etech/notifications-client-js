@@ -98,11 +98,13 @@ export interface OrganizationList {
 export interface Organization {
 	organizationID: string;
 	organizationName: string;
+	slug: string;
 	status: OrganizationStatus;
 }
 
 export interface CreateOrganizationData {
 	organizationName: string;
+	slug: string;
 }
 
 export interface UpdateOrganizationData {
