@@ -183,10 +183,10 @@ export class NotificationsManageClient {
 	/**
 	 * Creates a new account.
 	 */
-	async createAccount(account:Types.CreateAccountData):Promise<Types.Account> {
+	async createAccount(account:Types.CreateAccountData):Promise<Types.AccountSecret> {
 		const uri = "/manage/organization/{{organizationID}}/account";
 
-		return await this.executeRequest<Types.Account>(uri, "POST", "create-account", account);
+		return await this.executeRequest<Types.AccountSecret>(uri, "POST", "create-account", account);
 	}
 
 	/**

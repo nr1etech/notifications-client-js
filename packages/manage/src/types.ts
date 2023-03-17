@@ -124,10 +124,15 @@ export interface Account {
 	userName: string|undefined;
 	description: string;
 	organizationName: string;
+	organizationSlug: string;
 	status: AccountStatus;
 	identity: string|undefined;
 	role: AccountRole;
 	accountType: AccountType;
+}
+
+export interface AccountSecret extends Account {
+	secret: string|undefined;
 }
 
 export interface CreateAccountData {
