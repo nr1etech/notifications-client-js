@@ -63,7 +63,7 @@ export class NotificationsMessageClient {
 				method: "POST",
 				headers: {
 					"Content-Type": `application/vnd.notification.${contentTypeResource}.v1+json`,
-					"Authorization": this.authorizationToken,
+					"Authorization": `Bearer ${this.authorizationToken}`,
 				},
 				body: requestData,
 			});

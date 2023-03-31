@@ -381,7 +381,7 @@ export class NotificationsManageClient {
 				method,
 				headers: {
 					"Content-Type": `application/vnd.notification.${contentTypeResource}.v1+json`,
-					"Authorization": this.authorizationToken,
+					"Authorization": `Bearer ${this.authorizationToken}`,
 				},
 				body: requestData,
 			});
