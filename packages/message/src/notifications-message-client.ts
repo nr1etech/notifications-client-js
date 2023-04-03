@@ -11,13 +11,13 @@ export class NotificationsMessageClient {
 	 */
 	constructor(options: NotificationsMessageClientOptions) {
 		const baseUrl = options.baseUrl.endsWith("/") ? options.baseUrl.slice(0, -1) : options.baseUrl;	// remove trailing slash
-		if (!this.isUrl(baseUrl)) throw new ArgumentError("baseUrl is invalid.");
+		if (!this.isUrl(baseUrl)) throw new ArgumentError("baseUrl is invalid.", (new Error()).stack);
 		this.baseUrl = baseUrl;
 
-		if (!options.authorizationToken) throw new ArgumentError("authorizatonToken is invalid.");
+		if (!options.authorizationToken) throw new ArgumentError("authorizatonToken is invalid.", (new Error()).stack);
 		this.authorizationToken = options.authorizationToken;
 
-		if (!options.organizationID) throw new ArgumentError("organizationID is invalid.");
+		if (!options.organizationID) throw new ArgumentError("organizationID is invalid.", (new Error()).stack);
 		this.organizationID = options.organizationID;
 	}
 
@@ -69,23 +69,23 @@ export class NotificationsMessageClient {
 			});
 			responseBodyText = await response.text();
 		} catch (ex) {
-			throw new FetchError((ex as Error).message, { cause: ex });
+			throw new FetchError((ex as Error).message, (ex instanceof Error) ? ex.stack : (new Error()).stack, { cause: ex });
 		}
 
 		if (response.status === 401 || response.status === 403) {	// AWS HTTP API Gateway returns 403 from the authorizer (instead of 401) if the credentials are invalid
-			throw new AuthorizationError("Authorization Failed");
+			throw new AuthorizationError("Authorization Failed", (new Error()).stack, { cause: { status: response.status, body: responseBodyText, headers: response.headers.raw(), statusText: response.statusText, redirection: response.redirected, url: response.url, } });
 		} else if (response.status === 404) {
-			throw new ResponseError("Resource not found");
+			throw new ResponseError("Resource not found", (new Error()).stack, { cause: { status: response.status, body: responseBodyText, headers: response.headers.raw(), statusText: response.statusText, redirection: response.redirected, url: response.url, } });
 		}
 
 		try {
 			responseBody = responseBodyText && JSON.parse(responseBodyText);
 		} catch (ex) {
-			throw new ResponseError("Invalid response content", { cause: responseBodyText});
+			throw new ResponseError("Invalid response content", (new Error()).stack, { cause: { status: response.status, body: responseBodyText, headers: response.headers.raw(), statusText: response.statusText, redirection: response.redirected, url: response.url, } });
 		}
 
 		if (response.status != 200) {
-			throw new ResponseError((responseBody as ErrorResponse).error ?? responseBodyText);
+			throw new ResponseError((responseBody as ErrorResponse).error ?? responseBodyText, (new Error()).stack, { cause: { status: response.status, body: responseBodyText, headers: response.headers.raw(), statusText: response.statusText, redirection: response.redirected, url: response.url, } });
 		}
 
 		return responseBody as SendResponse;
