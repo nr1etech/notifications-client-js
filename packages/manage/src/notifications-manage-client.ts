@@ -390,21 +390,30 @@ export class NotificationsManageClient {
 			throw new Errors.FetchError((ex as Error).message, (ex instanceof Error) ? ex.stack : (new Error()).stack, { cause: ex });
 		}
 
+		// In some cases .raw() is not a function and fails.
+		let responseHeaders:Record<string, string[]>;
+		try {
+			responseHeaders = response.headers.raw();
+		} catch (ex) {
+			console.log(response.headers);
+			responseHeaders = {};
+		}
+
 		if (response.status === 401 || response.status === 403) {	// AWS HTTP API Gateway returns 403 from the authorizer (instead of 401) if the credentials are invalid
-			throw new Errors.AuthorizationError("Authorization Failed", (new Error()).stack, { cause: { status: response.status, body: responseBodyText, headers: response.headers.raw(), statusText: response.statusText, redirection: response.redirected, url: response.url, } });
+			throw new Errors.AuthorizationError("Authorization Failed", (new Error()).stack, { cause: { status: response.status, body: responseBodyText, headers: responseHeaders, statusText: response.statusText, redirection: response.redirected, url: response.url, } });
 		} else if (response.status === 404) {
-			throw new Errors.ResponseError("Resource not found", (new Error()).stack, { cause: { status: response.status, body: responseBodyText, headers: response.headers.raw(), statusText: response.statusText, redirection: response.redirected, url: response.url, } });
+			throw new Errors.ResponseError("Resource not found", (new Error()).stack, { cause: { status: response.status, body: responseBodyText, headers: responseHeaders, statusText: response.statusText, redirection: response.redirected, url: response.url, } });
 		}
 
 
 		try {
 			responseBody = responseBodyText && JSON.parse(responseBodyText);
 		} catch (ex) {
-			throw new Errors.ResponseError("Invalid response content", (new Error()).stack, { cause: { status: response.status, body: responseBodyText, headers: response.headers.raw(), statusText: response.statusText, redirection: response.redirected, url: response.url, } });
+			throw new Errors.ResponseError("Invalid response content", (new Error()).stack, { cause: { status: response.status, body: responseBodyText, headers: responseHeaders, statusText: response.statusText, redirection: response.redirected, url: response.url, } });
 		}
 
 		if (response.status != 200) {
-			throw new Errors.ResponseError((responseBody as Types.ErrorResponse).error ?? responseBodyText, (new Error()).stack, { cause: { status: response.status, body: responseBodyText, headers: response.headers.raw(), statusText: response.statusText, redirection: response.redirected, url: response.url, } });
+			throw new Errors.ResponseError((responseBody as Types.ErrorResponse).error ?? responseBodyText, (new Error()).stack, { cause: { status: response.status, body: responseBodyText, headers: responseHeaders, statusText: response.statusText, redirection: response.redirected, url: response.url, } });
 		}
 
 		return responseBody as T;
