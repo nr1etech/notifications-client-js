@@ -1,5 +1,5 @@
 import { ArgumentError, AuthorizationError, FetchError, ResponseError } from "./errors";
-import fetch, { Response } from "node-fetch";
+import fetch, { Response, Headers } from "node-fetch";
 
 export class NotificationsMessageClient {
 	private baseUrl:string;
@@ -73,19 +73,19 @@ export class NotificationsMessageClient {
 		}
 
 		if (response.status === 401 || response.status === 403) {	// AWS HTTP API Gateway returns 403 from the authorizer (instead of 401) if the credentials are invalid
-			throw new AuthorizationError("Authorization Failed", (new Error()).stack, { cause: { status: response.status, body: responseBodyText, headers: response.headers.raw(), statusText: response.statusText, redirection: response.redirected, url: response.url, } });
+			throw new AuthorizationError("Authorization Failed", (new Error()).stack, { cause: { status: response.status, body: responseBodyText, headers: this.headersToObject(response.headers), statusText: response.statusText, redirection: response.redirected, url: response.url, } });
 		} else if (response.status === 404) {
-			throw new ResponseError("Resource not found", (new Error()).stack, { cause: { status: response.status, body: responseBodyText, headers: response.headers.raw(), statusText: response.statusText, redirection: response.redirected, url: response.url, } });
+			throw new ResponseError("Resource not found", (new Error()).stack, { cause: { status: response.status, body: responseBodyText, headers: this.headersToObject(response.headers), statusText: response.statusText, redirection: response.redirected, url: response.url, } });
 		}
 
 		try {
 			responseBody = responseBodyText && JSON.parse(responseBodyText);
 		} catch (ex) {
-			throw new ResponseError("Invalid response content", (new Error()).stack, { cause: { status: response.status, body: responseBodyText, headers: response.headers.raw(), statusText: response.statusText, redirection: response.redirected, url: response.url, } });
+			throw new ResponseError("Invalid response content", (new Error()).stack, { cause: { status: response.status, body: responseBodyText, headers: this.headersToObject(response.headers), statusText: response.statusText, redirection: response.redirected, url: response.url, } });
 		}
 
 		if (response.status != 200) {
-			throw new ResponseError((responseBody as ErrorResponse).error ?? responseBodyText, (new Error()).stack, { cause: { status: response.status, body: responseBodyText, headers: response.headers.raw(), statusText: response.statusText, redirection: response.redirected, url: response.url, } });
+			throw new ResponseError((responseBody as ErrorResponse).error ?? responseBodyText, (new Error()).stack, { cause: { status: response.status, body: responseBodyText, headers: this.headersToObject(response.headers), statusText: response.statusText, redirection: response.redirected, url: response.url, } });
 		}
 
 		return responseBody as SendResponse;
@@ -98,6 +98,20 @@ export class NotificationsMessageClient {
 		} catch { }
 
 		return false;
+	}
+
+	private headersToObject(headers:Headers):Record<string, string> {
+		const headersObj:Record<string, string> = {};
+
+		try {
+			for (const entry of headers) {
+				const key = entry[0], values = entry[1];
+
+				headersObj[key] = values;
+			}
+		} catch {}
+
+		return headersObj;
 	}
 }
 

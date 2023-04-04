@@ -1,6 +1,6 @@
 import * as Errors from "./errors";
 import * as Types from "./types";
-import fetch, { Response } from "node-fetch";
+import fetch, { Response, Headers } from "node-fetch";
 
 export class NotificationsManageClient {
 	private baseUrl:string;
@@ -390,30 +390,21 @@ export class NotificationsManageClient {
 			throw new Errors.FetchError((ex as Error).message, (ex instanceof Error) ? ex.stack : (new Error()).stack, { cause: ex });
 		}
 
-		// In some cases .raw() is not a function and fails.
-		let responseHeaders:Record<string, string[]>;
-		try {
-			responseHeaders = response.headers.raw();
-		} catch (ex) {
-			console.log(response.headers);
-			responseHeaders = {};
-		}
-
 		if (response.status === 401 || response.status === 403) {	// AWS HTTP API Gateway returns 403 from the authorizer (instead of 401) if the credentials are invalid
-			throw new Errors.AuthorizationError("Authorization Failed", (new Error()).stack, { cause: { status: response.status, body: responseBodyText, headers: responseHeaders, statusText: response.statusText, redirection: response.redirected, url: response.url, } });
+			throw new Errors.AuthorizationError("Authorization Failed", (new Error()).stack, { cause: { status: response.status, body: responseBodyText, headers: this.headersToObject(response.headers), statusText: response.statusText, redirection: response.redirected, url: response.url, } });
 		} else if (response.status === 404) {
-			throw new Errors.ResponseError("Resource not found", (new Error()).stack, { cause: { status: response.status, body: responseBodyText, headers: responseHeaders, statusText: response.statusText, redirection: response.redirected, url: response.url, } });
+			throw new Errors.ResponseError("Resource not found", (new Error()).stack, { cause: { status: response.status, body: responseBodyText, headers: this.headersToObject(response.headers), statusText: response.statusText, redirection: response.redirected, url: response.url, } });
 		}
 
 
 		try {
 			responseBody = responseBodyText && JSON.parse(responseBodyText);
 		} catch (ex) {
-			throw new Errors.ResponseError("Invalid response content", (new Error()).stack, { cause: { status: response.status, body: responseBodyText, headers: responseHeaders, statusText: response.statusText, redirection: response.redirected, url: response.url, } });
+			throw new Errors.ResponseError("Invalid response content", (new Error()).stack, { cause: { status: response.status, body: responseBodyText, headers: this.headersToObject(response.headers), statusText: response.statusText, redirection: response.redirected, url: response.url, } });
 		}
 
 		if (response.status != 200) {
-			throw new Errors.ResponseError((responseBody as Types.ErrorResponse).error ?? responseBodyText, (new Error()).stack, { cause: { status: response.status, body: responseBodyText, headers: responseHeaders, statusText: response.statusText, redirection: response.redirected, url: response.url, } });
+			throw new Errors.ResponseError((responseBody as Types.ErrorResponse).error ?? responseBodyText, (new Error()).stack, { cause: { status: response.status, body: responseBodyText, headers: this.headersToObject(response.headers), statusText: response.statusText, redirection: response.redirected, url: response.url, } });
 		}
 
 		return responseBody as T;
@@ -426,5 +417,19 @@ export class NotificationsManageClient {
 		} catch { }
 
 		return false;
+	}
+
+	private headersToObject(headers:Headers):Record<string, string> {
+		const headersObj:Record<string, string> = {};
+
+		try {
+			for (const entry of headers) {
+				const key = entry[0], values = entry[1];
+
+				headersObj[key] = values;
+			}
+		} catch {}
+
+		return headersObj;
 	}
 }

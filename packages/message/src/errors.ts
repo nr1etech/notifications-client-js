@@ -53,6 +53,6 @@ export interface ResponseErrorCause {
 	redirection: boolean;
 	status: number;
 	statusText: string;
-	headers: Record<string, string[]>;
+	headers: Record<string, string>;
 	body: string;
 }
