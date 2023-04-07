@@ -73,6 +73,7 @@ export interface CreateEmailMessage {
 	recipient: EmailRecipient;
 	mergeValues?: Record<string, unknown>;
 	metadata?: Record<string, string>;
+	senderID?: string;
 }
 
 export interface CreateSmsMessage {
@@ -81,6 +82,7 @@ export interface CreateSmsMessage {
 	recipient: SmsRecipient;
 	mergeValues?: Record<string, unknown>;
 	metadata?: Record<string, string>;
+	senderID?: string;
 }
 
 export interface CreateMessageResult {
