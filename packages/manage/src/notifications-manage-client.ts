@@ -10,7 +10,10 @@ export class NotificationsManageClient {
 	constructor(baseUrl:string, options:Types.NotificationsManageClientOptions) {
 		baseUrl = baseUrl.endsWith("/") ? baseUrl.slice(0, -1) : baseUrl;	// remove trailing slash
 
-		if (!this.isUrl(baseUrl)) throw new Errors.ArgumentError("baseUrl is invalid.", (new Error()).stack);
+		if (!this.isUrl(baseUrl)) {
+			const container:Errors.CaptureStackObject = {}; Error.captureStackTrace(container);
+			throw new Errors.ArgumentError("baseUrl is invalid.", container.stack);
+		}
 
 		this.baseUrl = baseUrl;
 		this.authorizationToken = options.authorizationToken;
@@ -387,7 +390,12 @@ export class NotificationsManageClient {
 			});
 			responseBodyText = await response.text();
 		} catch (ex) {
-			throw new Errors.FetchError((ex as Error).message, (ex instanceof Error) ? ex.stack : (new Error()).stack, { cause: ex });
+			if (ex instanceof Error) {
+				throw Errors.FetchError.FromError(ex);
+			} else {
+				const container:Errors.CaptureStackObject = {}; Error.captureStackTrace(container);
+				throw Errors.FetchError.FromObject("Error fetching", ex, container.stack);
+			}
 		}
 
 		if (response.status === 401 || response.status === 403) {	// AWS HTTP API Gateway returns 403 from the authorizer (instead of 401) if the credentials are invalid
