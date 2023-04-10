@@ -11,8 +11,7 @@ export class NotificationsManageClient {
 		baseUrl = baseUrl.endsWith("/") ? baseUrl.slice(0, -1) : baseUrl;	// remove trailing slash
 
 		if (!this.isUrl(baseUrl)) {
-			const container:Errors.CaptureStackObject = {}; Error.captureStackTrace(container);
-			throw new Errors.ArgumentError("baseUrl is invalid.", container.stack);
+			throw new Errors.ArgumentError("baseUrl is invalid.", { cause: baseUrl });
 		}
 
 		this.baseUrl = baseUrl;
@@ -353,7 +352,7 @@ export class NotificationsManageClient {
 	// If there is a network response with JSON then a tuple is returned (boolean success, object jsonContent). If any exceptions are thrown they are not handled by this method.
 	private async executeRequest<T>(uri:string, method:string, contentTypeResource:string, requestBody?:unknown, queryParameters?:Record<string, string|undefined>|undefined):Promise<T> {
 		if (uri.includes("{{organizationID")) {
-			if (!this.organizationID) throw new Errors.InitError("Required organizationID has not been set.", (new Error()).stack);
+			if (!this.organizationID) throw new Errors.InitError("Notifications Manage Client organizationID has not been set. Requests cannot be made without an organizationID.");
 			uri = uri.replace(/{{organizationID}}/, encodeURIComponent(this.organizationID));
 		}
 
@@ -399,20 +398,25 @@ export class NotificationsManageClient {
 		}
 
 		if (response.status === 401 || response.status === 403) {	// AWS HTTP API Gateway returns 403 from the authorizer (instead of 401) if the credentials are invalid
-			throw new Errors.AuthorizationError("Authorization Failed", (new Error()).stack, { cause: { status: response.status, body: responseBodyText, headers: this.headersToObject(response.headers), statusText: response.statusText, redirection: response.redirected, url: response.url, } });
+			throw new Errors.AuthorizationError("Authorization Failed", { cause: { status: response.status, body: responseBodyText, headers: this.headersToObject(response.headers), statusText: response.statusText, redirection: response.redirected, url: response.url, } });
 		} else if (response.status === 404) {
-			throw new Errors.ResponseError("Resource not found", (new Error()).stack, { cause: { status: response.status, body: responseBodyText, headers: this.headersToObject(response.headers), statusText: response.statusText, redirection: response.redirected, url: response.url, } });
+			throw new Errors.ResponseError("Resource not found", { cause: { status: response.status, body: responseBodyText, headers: this.headersToObject(response.headers), statusText: response.statusText, redirection: response.redirected, url: response.url, } });
 		}
 
 
 		try {
 			responseBody = responseBodyText && JSON.parse(responseBodyText);
 		} catch (ex) {
-			throw new Errors.ResponseError("Invalid response content", (new Error()).stack, { cause: { status: response.status, body: responseBodyText, headers: this.headersToObject(response.headers), statusText: response.statusText, redirection: response.redirected, url: response.url, } });
+			if (ex instanceof Error) {
+				throw Errors.ResponseError.FromError(ex, { status: response.status, body: responseBodyText, headers: this.headersToObject(response.headers), statusText: response.statusText, redirection: response.redirected, url: response.url, error: ex, }, ex.stack);
+			} else {
+				throw new Errors.ResponseError("Invalid response content", { cause: { status: response.status, body: responseBodyText, headers: this.headersToObject(response.headers), statusText: response.statusText, redirection: response.redirected, url: response.url, error: ex, } });
+			}
 		}
 
 		if (response.status != 200) {
-			throw new Errors.ResponseError((responseBody as Types.ErrorResponse).error ?? responseBodyText, (new Error()).stack, { cause: { status: response.status, body: responseBodyText, headers: this.headersToObject(response.headers), statusText: response.statusText, redirection: response.redirected, url: response.url, } });
+			const container:Errors.CaptureStackObject = {}; Error.captureStackTrace(container);
+			throw Errors.ResponseError.FromObject((responseBody as Types.ErrorResponse).error ?? responseBodyText, { status: response.status, body: responseBodyText, headers: this.headersToObject(response.headers), statusText: response.statusText, redirection: response.redirected, url: response.url, }, container.stack);
 		}
 
 		return responseBody as T;

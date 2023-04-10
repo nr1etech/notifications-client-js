@@ -1,4 +1,4 @@
-import { ArgumentError, AuthorizationError, FetchError, ResponseError } from "./errors";
+import { ArgumentError, AuthorizationError, CaptureStackObject, FetchError, ResponseError } from "./errors";
 import fetch, { Response, Headers } from "node-fetch";
 
 export class NotificationsMessageClient {
@@ -11,13 +11,15 @@ export class NotificationsMessageClient {
 	 */
 	constructor(options: NotificationsMessageClientOptions) {
 		const baseUrl = options.baseUrl.endsWith("/") ? options.baseUrl.slice(0, -1) : options.baseUrl;	// remove trailing slash
-		if (!this.isUrl(baseUrl)) throw new ArgumentError("baseUrl is invalid.", (new Error()).stack);
+		if (!this.isUrl(baseUrl)) {
+			throw new ArgumentError("baseUrl is invalid.");
+		}
 		this.baseUrl = baseUrl;
 
-		if (!options.authorizationToken) throw new ArgumentError("authorizatonToken is invalid.", (new Error()).stack);
+		if (!options.authorizationToken) throw new ArgumentError("authorizatonToken is invalid.");
 		this.authorizationToken = options.authorizationToken;
 
-		if (!options.organizationID) throw new ArgumentError("organizationID is invalid.", (new Error()).stack);
+		if (!options.organizationID) throw new ArgumentError("organizationID is invalid.");
 		this.organizationID = options.organizationID;
 	}
 
@@ -69,23 +71,33 @@ export class NotificationsMessageClient {
 			});
 			responseBodyText = await response.text();
 		} catch (ex) {
-			throw new FetchError((ex as Error).message, (ex instanceof Error) ? ex.stack : (new Error()).stack, { cause: ex });
+			if (ex instanceof Error) {
+				throw FetchError.FromError(ex);
+			} else {
+				const container:CaptureStackObject = {}; Error.captureStackTrace(container);
+				throw FetchError.FromObject("Unknown error from the Fetch API", ex, container.stack);
+			}
 		}
 
 		if (response.status === 401 || response.status === 403) {	// AWS HTTP API Gateway returns 403 from the authorizer (instead of 401) if the credentials are invalid
-			throw new AuthorizationError("Authorization Failed", (new Error()).stack, { cause: { status: response.status, body: responseBodyText, headers: this.headersToObject(response.headers), statusText: response.statusText, redirection: response.redirected, url: response.url, } });
+			throw new AuthorizationError("Authorization Failed", { cause: { status: response.status, body: responseBodyText, headers: this.headersToObject(response.headers), statusText: response.statusText, redirection: response.redirected, url: response.url, } });
 		} else if (response.status === 404) {
-			throw new ResponseError("Resource not found", (new Error()).stack, { cause: { status: response.status, body: responseBodyText, headers: this.headersToObject(response.headers), statusText: response.statusText, redirection: response.redirected, url: response.url, } });
+			throw new ResponseError("Resource not found", { cause: { status: response.status, body: responseBodyText, headers: this.headersToObject(response.headers), statusText: response.statusText, redirection: response.redirected, url: response.url, } });
 		}
 
 		try {
 			responseBody = responseBodyText && JSON.parse(responseBodyText);
 		} catch (ex) {
-			throw new ResponseError("Invalid response content", (new Error()).stack, { cause: { status: response.status, body: responseBodyText, headers: this.headersToObject(response.headers), statusText: response.statusText, redirection: response.redirected, url: response.url, } });
+			if (ex instanceof Error) {
+				throw ResponseError.FromError(ex, { status: response.status, body: responseBodyText, headers: this.headersToObject(response.headers), statusText: response.statusText, redirection: response.redirected, url: response.url, });
+			} else {
+				const container:CaptureStackObject = {}; Error.captureStackTrace(container);
+				throw ResponseError.FromObject("Invalid response content", { status: response.status, body: responseBodyText, headers: this.headersToObject(response.headers), statusText: response.statusText, redirection: response.redirected, url: response.url, }, container.stack);
+			}
 		}
 
 		if (response.status != 200) {
-			throw new ResponseError((responseBody as ErrorResponse).error ?? responseBodyText, (new Error()).stack, { cause: { status: response.status, body: responseBodyText, headers: this.headersToObject(response.headers), statusText: response.statusText, redirection: response.redirected, url: response.url, } });
+			throw new ResponseError((responseBody as ErrorResponse).error ?? responseBodyText, { cause: { status: response.status, body: responseBodyText, headers: this.headersToObject(response.headers), statusText: response.statusText, redirection: response.redirected, url: response.url, } });
 		}
 
 		return responseBody as SendResponse;

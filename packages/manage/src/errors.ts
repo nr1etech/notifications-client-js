@@ -3,7 +3,6 @@ export interface CaptureStackObject {
 }
 export interface ErrorOptions<TCause> { cause: TCause }
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 class NotificationManageError<TCause> extends Error {
 	public name: string;
 	public cause:unknown|undefined;
@@ -16,13 +15,13 @@ class NotificationManageError<TCause> extends Error {
 }
 
 export class InitError extends NotificationManageError<unknown> {
-	constructor(message:string, stack:string|undefined, options?:ErrorOptions<unknown>) {
+	constructor(message:string, options?:ErrorOptions<unknown>) {
 		super(message, "InitError", options);
 	}
 }
 
 export class ArgumentError extends NotificationManageError<unknown> {
-	constructor(message:string, stack:string|undefined, options?:ErrorOptions<unknown>) {
+	constructor(message:string, options?:ErrorOptions<unknown>) {
 		super(message, "ArgumentError", undefined);
 	}
 }
@@ -47,25 +46,23 @@ export class FetchError extends NotificationManageError<unknown> {
 }
 
 export class AuthorizationError extends NotificationManageError<ResponseErrorCause> {
-	constructor(message:string, stack:string|undefined, options?:ErrorOptions<ResponseErrorCause>) {
+	constructor(message:string, options?:ErrorOptions<ResponseErrorCause>) {
 		super(message, "AuthorizationError", options);
 	}
 }
 
 export class ResponseError extends NotificationManageError<ResponseErrorCause> {
-	constructor(message:string, stack:string|undefined, options?:ErrorOptions<ResponseErrorCause>) {
+	constructor(message:string, options?:ErrorOptions<ResponseErrorCause>) {
 		super(message, "ResponseError", options);
 	}
-	static FromError(error:Error):ResponseError {
-		const err = new ResponseError(error.message, { cause: error });
-		err.stack = error.stack;
-
+	static FromError(error:Error, cause:ResponseErrorCause, stack:string|undefined):ResponseError {
+		const err = new ResponseError(error.message, { cause: cause });
+		err.stack = stack;
 		return err;
 	}
-	static FromObject(message:string, cause:unknown, stack:string|undefined) {
+	static FromObject(message:string, cause:ResponseErrorCause, stack:string|undefined) {
 		const err = new ResponseError(message, { cause: cause });
 		err.stack = stack;
-
 		return err;
 	}
 }
@@ -77,4 +74,5 @@ export interface ResponseErrorCause {
 	statusText: string;
 	headers: Record<string, string>;
 	body: string;
+	error?: unknown;
 }

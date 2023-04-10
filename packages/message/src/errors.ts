@@ -1,50 +1,62 @@
+export interface CaptureStackObject {
+	stack?: string|undefined;
+}
 export interface ErrorOptions<TCause> { cause: TCause }
 
-// Based on https://www.bennadel.com/blog/3226-experimenting-with-error-sub-classing-using-es5-and-typescript-2-1-5.htm
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-interface NotificationMessageError<TCause> extends Error {
-}
-
-// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
-class NotificationMessageError<TCause> {
+class NotificationMessageError<TCause> extends Error {
 	public name: string;
-	public message: string;
-	public stack?: string;
 	public cause:unknown|undefined;
 
-	constructor(message:string, name:string, stack:string|undefined, options:ErrorOptions<TCause>|undefined) {
+	constructor(message:string, name:string, options:ErrorOptions<TCause>|undefined) {
+		super(message);
 		this.name = name;
-		this.message = message;
-		this.stack = (new Error(message)).stack;
 		this.cause = options?.cause;
 	}
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-Object.setPrototypeOf(NotificationMessageError, Object.create(Error.prototype));
-
 export class ArgumentError extends NotificationMessageError<unknown> {
-	constructor(message:string, stack: string|undefined, options?:ErrorOptions<unknown>) {
-		super(message, "ArgumentError", stack, options);
+	constructor(message:string, options?:ErrorOptions<unknown>) {
+		super(message, "ArgumentError", options);
 	}
 }
 
 export class FetchError extends NotificationMessageError<unknown> {
-	constructor(message:string, stack: string|undefined, options?:ErrorOptions<unknown>) {
-		super(message, "FetchError", stack, options);
+	constructor(message:string, options?:ErrorOptions<unknown>) {
+		super(message, "FetchError", options);
+	}
+	static FromError(error:Error):FetchError {
+		const err = new FetchError(error.message, { cause: error });
+		err.stack = error.stack;
+
+		return err;
+	}
+	static FromObject(message:string, cause:unknown, stack:string|undefined) {
+		const err = new FetchError(message, { cause: cause });
+		err.stack = stack;
+
+		return err;
 	}
 }
 
 export class AuthorizationError extends NotificationMessageError<ResponseErrorCause> {
-	constructor(message:string, stack: string|undefined, options?:ErrorOptions<ResponseErrorCause>) {
-		super(message, "AuthorizationError", stack, options);
+	constructor(message:string, options?:ErrorOptions<ResponseErrorCause>) {
+		super(message, "AuthorizationError", options);
 	}
 }
 
 export class ResponseError extends NotificationMessageError<ResponseErrorCause> {
-	constructor(message:string, stack: string|undefined, options?:ErrorOptions<ResponseErrorCause>) {
-		super(message, "ResponseError", stack, options);
+	constructor(message:string, options?:ErrorOptions<ResponseErrorCause>) {
+		super(message, "ResponseError", options);
+	}
+	static FromError(error:Error, cause:ResponseErrorCause):ResponseError {
+		const err = new ResponseError(error.message, { cause: cause });
+		err.stack = error.message;
+		return err;
+	}
+	static FromObject(message:string, cause:ResponseErrorCause, stack:string|undefined) {
+		const err = new ResponseError(message, { cause: cause });
+		err.stack = stack;
+		return err;
 	}
 }
 
@@ -55,4 +67,5 @@ export interface ResponseErrorCause {
 	statusText: string;
 	headers: Record<string, string>;
 	body: string;
+	error?: unknown;
 }
