@@ -211,6 +211,7 @@ export class SmsMessage {
 		this.recipient = recipient;
 		this.mergeValues = mergeValues;
 		this.metadata = metadata;
+		this.senderID = senderID;
 
 		if (!(this.recipient instanceof SmsRecipient)) throw new Error("recipient must be an instance of SmsRecipient");
 		if (this.mergeValues != undefined && !(this.mergeValues instanceof Object)) throw new Error("mergeValues must be an object");
