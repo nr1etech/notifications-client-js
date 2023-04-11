@@ -162,9 +162,15 @@ export class EmailMessage {
 	senderID:string|undefined;
 
 	/**
-	 * Email Message information used to send an email.
+	 * The message information for sending an Email message.
+	 * @param {string} templateSlug
+	 * @param {string|undefined} templateLocale
+	 * @param {EmailRecipient} recipient
+	 * @param {Object} mergeValues
+	 * @param {Metadata} metadata
+	 * @param {string|undefined} senderID
 	 */
-	constructor(templateSlug:string, templateLocale:string|undefined, recipient:EmailRecipient, mergeValues:Record<string, unknown>|undefined, metadata:Record<string,string>|undefined, senderID:string|undefined) {
+	constructor(templateSlug:string, templateLocale:string|undefined, recipient:EmailRecipient, mergeValues:Record<string, unknown>|undefined, metadata:Record<string,string>|undefined, senderID?:string|undefined) {
 		this.templateSlug = templateSlug;
 		this.templateLocale = templateLocale;
 		this.recipient = recipient;
@@ -204,8 +210,9 @@ export class SmsMessage {
 	 * @param {SmsRecipient} recipient
 	 * @param {Object} mergeValues
 	 * @param {Metadata} metadata
+	 * @param {string|undefined} senderID
 	 */
-	constructor(templateSlug:string, templateLocale:string|undefined, recipient:SmsRecipient, mergeValues:Record<string, unknown>|undefined, metadata:Record<string,string>|undefined, senderID:string|undefined) {
+	constructor(templateSlug:string, templateLocale:string|undefined, recipient:SmsRecipient, mergeValues:Record<string, unknown>|undefined, metadata:Record<string,string>|undefined, senderID?:string|undefined) {
 		this.templateSlug = templateSlug;
 		this.templateLocale = templateLocale;
 		this.recipient = recipient;
