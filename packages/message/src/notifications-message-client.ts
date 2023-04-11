@@ -159,18 +159,16 @@ export class EmailMessage {
 	recipient:EmailRecipient;
 	mergeValues:Record<string, unknown>|undefined;
 	metadata:Record<string,string>|undefined;
-	senderID:string|undefined;
 
 	/**
 	 * Email Message information used to send an email.
 	 */
-	constructor(templateSlug:string, templateLocale:string|undefined, recipient:EmailRecipient, mergeValues:Record<string, unknown>|undefined, metadata:Record<string,string>|undefined, senderID:string|undefined) {
+	constructor(templateSlug:string, templateLocale:string|undefined, recipient:EmailRecipient, mergeValues:Record<string, unknown>|undefined, metadata:Record<string,string>|undefined) {
 		this.templateSlug = templateSlug;
 		this.templateLocale = templateLocale;
 		this.recipient = recipient;
 		this.mergeValues = mergeValues;
 		this.metadata = metadata;
-		this.senderID = senderID;
 
 		if (!(this.recipient instanceof EmailRecipient)) throw new Error("recipient must be an instance of EmailRecipient");
 		if (this.mergeValues != undefined && !(this.mergeValues instanceof Object)) throw new Error("mergeValues must be a simple object");
@@ -195,7 +193,6 @@ export class SmsMessage {
 	recipient:SmsRecipient;
 	mergeValues:Record<string, unknown>|undefined;
 	metadata:Record<string, string>|undefined;
-	senderID:string|undefined;
 
 	/**
 	 * The message information for sending an SMS message.
@@ -205,7 +202,7 @@ export class SmsMessage {
 	 * @param {Object} mergeValues
 	 * @param {Metadata} metadata
 	 */
-	constructor(templateSlug:string, templateLocale:string|undefined, recipient:SmsRecipient, mergeValues:Record<string, unknown>|undefined, metadata:Record<string,string>|undefined, senderID:string|undefined) {
+	constructor(templateSlug:string, templateLocale:string|undefined, recipient:SmsRecipient, mergeValues:Record<string, unknown>|undefined, metadata:Record<string,string>|undefined) {
 		this.templateSlug = templateSlug;
 		this.templateLocale = templateLocale;
 		this.recipient = recipient;
