@@ -1,4 +1,4 @@
-import { ArgumentError, AuthorizationError, CaptureStackObject, FetchError, ResponseError } from "./errors";
+import { ArgumentError, AuthorizationError, FetchError, ResponseError } from "./errors";
 import fetch, { Response, Headers } from "node-fetch";
 
 export class NotificationsMessageClient {
@@ -74,8 +74,8 @@ export class NotificationsMessageClient {
 			if (ex instanceof Error) {
 				throw FetchError.FromError(ex);
 			} else {
-				const container:CaptureStackObject = {}; Error.captureStackTrace(container);
-				throw FetchError.FromObject("Unknown error from the Fetch API", ex, container.stack);
+				const stack = Error().stack;
+				throw FetchError.FromObject("Unknown error from the Fetch API", ex, stack);
 			}
 		}
 
@@ -91,8 +91,8 @@ export class NotificationsMessageClient {
 			if (ex instanceof Error) {
 				throw ResponseError.FromError(ex, { status: response.status, body: responseBodyText, headers: this.headersToObject(response.headers), statusText: response.statusText, redirection: response.redirected, url: response.url, });
 			} else {
-				const container:CaptureStackObject = {}; Error.captureStackTrace(container);
-				throw ResponseError.FromObject("Invalid response content", { status: response.status, body: responseBodyText, headers: this.headersToObject(response.headers), statusText: response.statusText, redirection: response.redirected, url: response.url, }, container.stack);
+				const stack = Error().stack;
+				throw ResponseError.FromObject("Invalid response content", { status: response.status, body: responseBodyText, headers: this.headersToObject(response.headers), statusText: response.statusText, redirection: response.redirected, url: response.url, }, stack);
 			}
 		}
 

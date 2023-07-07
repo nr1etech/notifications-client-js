@@ -392,8 +392,8 @@ export class NotificationsManageClient {
 			if (ex instanceof Error) {
 				throw Errors.FetchError.FromError(ex);
 			} else {
-				const container:Errors.CaptureStackObject = {}; Error.captureStackTrace(container);
-				throw Errors.FetchError.FromObject("Error fetching", ex, container.stack);
+				const stack = Error().stack;
+				throw Errors.FetchError.FromObject("Error fetching", ex, stack);
 			}
 		}
 
@@ -415,8 +415,8 @@ export class NotificationsManageClient {
 		}
 
 		if (response.status != 200) {
-			const container:Errors.CaptureStackObject = {}; Error.captureStackTrace(container);
-			throw Errors.ResponseError.FromObject((responseBody as Types.ErrorResponse).error ?? responseBodyText, { status: response.status, body: responseBodyText, headers: this.headersToObject(response.headers), statusText: response.statusText, redirection: response.redirected, url: response.url, }, container.stack);
+			const stack = Error().stack;
+			throw Errors.ResponseError.FromObject((responseBody as Types.ErrorResponse).error ?? responseBodyText, { status: response.status, body: responseBodyText, headers: this.headersToObject(response.headers), statusText: response.statusText, redirection: response.redirected, url: response.url, }, stack);
 		}
 
 		return responseBody as T;

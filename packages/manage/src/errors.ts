@@ -1,6 +1,3 @@
-export interface CaptureStackObject {
-	stack?: string|undefined;
-}
 export interface ErrorOptions<TCause> { cause: TCause }
 
 class NotificationManageError<TCause> extends Error {
