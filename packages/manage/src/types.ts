@@ -315,6 +315,7 @@ export enum SenderStatus {
 export enum ServiceProvider {
 	Twilio = "twilio",
 	SendGrid = "sendgrid",
+	AmazonSes = "amazon-ses",
 	EmailIntegrationTest = "email-integration-test",
 	SmsIntegrationTest = "sms-integration-test",
 }
