@@ -261,70 +261,81 @@ export interface CreateBlockData {
 // **********************
 // Enums
 
-export enum MessageType {
-	Email = "email",
-	Sms = "sms",
-}
+export const MessageType = {
+	Email: "email",
+	Sms: "sms",
+} as const;
+export type MessageType = typeof MessageType[keyof typeof MessageType];
 
-export enum MessageStatus {
-	Created = "created",
-	Pending = "pending",
-	Sending = "sending",
-	Sent = "sent",
-	Success = "success",
-	Failure = "failure",
-}
+export const MessageStatus = {
+	Created: "created",
+	Pending: "pending",
+	Sending: "sending",
+	Sent: "sent",
+	Success: "success",
+	Failure: "failure",
+} as const;
+export type MessageStatus = typeof MessageStatus[keyof typeof MessageStatus];
 
-export enum OrganizationStatus {
-	Active = "active",
-	Inactive = "inactive",
-}
+export const OrganizationStatus = {
+	Active: "active",
+	Inactive: "inactive",
+} as const;
+export type OrganizationStatus = typeof OrganizationStatus[keyof typeof OrganizationStatus];
 
-export enum AccountRole {
-	GlobalAdmin = "global-admin",
-	Management = "management",
-	Messaging = "messaging",
-	MessagingTest = "messaging-test",
-}
+export const AccountRole = {
+	GlobalAdmin: "global-admin",
+	Management: "management",
+	Messaging: "messaging",
+	MessagingTest: "messaging-test",
+} as const;
+export type AccountRole = typeof AccountRole[keyof typeof AccountRole];
 
-export enum AccountType {
-	User = "user",
-	Client = "client",
-}
+export const AccountType = {
+	User: "user",
+	Client: "client",
+} as const;
+export type AccountType = typeof AccountType[keyof typeof AccountType];
 
-export enum AccountStatus {
-	Active = "active",
-	Inactive = "inactive",
-}
+export const AccountStatus = {
+	Active: "active",
+	Inactive: "inactive",
+} as const;
+export type AccountStatus = typeof AccountStatus[keyof typeof AccountStatus];
 
-export enum TemplateStatus {
-	Active = "active",
-	Inactive = "inactive",
-}
+export const TemplateStatus = {
+	Active: "active",
+	Inactive: "inactive",
+} as const;
+export type TemplateStatus = typeof TemplateStatus[keyof typeof TemplateStatus];
 
-export enum TemplateStage {
-	Published = "published",
-	Draft = "draft",
-}
+export const TemplateStage = {
+	Published: "published",
+	Draft: "draft",
+} as const;
+export type TemplateStage = typeof TemplateStage[keyof typeof TemplateStage];
 
-export enum SenderStatus {
-	Active = "active",
-	Inactive = "inactive",
-}
+export const SenderStatus = {
+	Active: "active",
+	Inactive: "inactive",
+} as const;
+export type SenderStatus = typeof SenderStatus[keyof typeof SenderStatus];
 
-export enum ServiceProvider {
-	Twilio = "twilio",
-	SendGrid = "sendgrid",
-	AmazonSes = "amazon-ses",
-	EmailIntegrationTest = "email-integration-test",
-	SmsIntegrationTest = "sms-integration-test",
-}
+export const ServiceProvider = {
+	Twilio: "twilio",
+	SendGrid: "sendgrid",
+	AwsSes: "aws-ses",
+	EmailIntegrationTest: "email-integration-test",
+	SmsIntegrationTest: "sms-integration-test",
+} as const;
+export type ServiceProvider = typeof ServiceProvider[keyof typeof ServiceProvider];
 
-export enum BlockReasonType {
-	Spam = "spam",
-	Bounce = "bounce",
-	Blocked = "blocked",
-	OptOut = "optout",
-	Other = "other",
-	Manual = "manual",
-}
+export const BlockReasonType = {
+	Spam: "spam",
+	Bounce: "bounce",
+	Blocked: "blocked",
+	OptOut: "optout",
+	Other: "other",
+	Manual: "manual",
+} as const;
+export type BlockReasonType = typeof BlockReasonType[keyof typeof BlockReasonType];
