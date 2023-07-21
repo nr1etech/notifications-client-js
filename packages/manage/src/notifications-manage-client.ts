@@ -53,15 +53,6 @@ export class NotificationsManageClient {
 	}
 
 	/**
-	 * Generates a valid Webhook key. This call can be made without an organization ID.
-	 */
-	async generateWebhookKey():Promise<Types.KeyResult> {
-		const uri = "/manage/key/webhook";
-
-		return await this.executeRequest<Types.KeyResult>(uri, "POST", "create-key");
-	}
-
-	/**
 	 * Get a list of messages. Limits the number of records by pageSize and starting with the record at nextPageID.
 	 */
 	async getMessages(pageSize:number, nextPageID?:string):Promise<Types.MessageList> {

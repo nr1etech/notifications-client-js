@@ -21,10 +21,6 @@ export interface RegistrationInfo {
 	id_token: string;
 }
 
-export interface KeyResult {
-	key: string;
-}
-
 export interface ErrorResponse extends Record<string, unknown> {
 	error:string|undefined;
 }
