@@ -64,7 +64,8 @@ export class NotificationsMessageClient {
 			response = await fetch(this.baseUrl + uri, {
 				method: "POST",
 				headers: {
-					"Content-Type": `application/vnd.notification.${contentTypeResource}.v1+json`,
+					"Content-Type": "application/json",
+					"Accept": `application/vnd.notification.${contentTypeResource}.v1+json`,
 					"Authorization": `Bearer ${this.authorizationToken}`,
 				},
 				body: requestData,
