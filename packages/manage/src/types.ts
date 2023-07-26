@@ -12,6 +12,7 @@ export interface AuthenticatedAccountInfo {
 export interface AccountInfo {
 	organizationID: string;
 	organizationName: string;
+	organizationSlug: string;
 	accountID: string;
 	accountDescription: string;
 	accountRole: AccountRole;
@@ -121,6 +122,7 @@ export interface Account {
 	accountID: string;
 	userName: string|undefined;
 	description: string;
+	organizationID: string;
 	organizationName: string;
 	organizationSlug: string;
 	status: AccountStatus;
