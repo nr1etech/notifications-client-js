@@ -51,6 +51,21 @@ export class NotificationsMessageClient {
 		return await this.executeRequest(`/message/${encodeURIComponent(this.organizationID)}/sms`, "create-sms", message);
 	}
 
+	/**
+	 * Queue an Email Message for sending. A test sender is used so the message will not be delivered.
+	 */
+	async sendTestEmail(message:EmailMessage):Promise<SendResponse> {
+		return await this.executeRequest(`/message/${encodeURIComponent(this.organizationID)}/email`, "create-test-email", message);
+	}
+
+	/**
+	 * Queue an SMS Message for sending. A test sender is used so the message will not be delivered.
+	 */
+	async sendTestSms(message:SmsMessage):Promise<SendResponse> {
+		return await this.executeRequest(`/message/${encodeURIComponent(this.organizationID)}/sms`, "create-test-sms", message);
+	}
+
+
 	private async executeRequest(uri:string, contentTypeResource:string, message:unknown):Promise<SendResponse> {
 
 		const requestData = JSON.stringify(message);
@@ -161,6 +176,7 @@ export class EmailMessage {
 	mergeValues:Record<string, unknown>|undefined;
 	metadata:Record<string,string>|undefined;
 	senderID:string|undefined;
+	sendDraft:boolean|undefined;
 
 	/**
 	 * The message information for sending an Email message.
@@ -171,13 +187,14 @@ export class EmailMessage {
 	 * @param {Metadata} metadata
 	 * @param {string|undefined} senderID
 	 */
-	constructor(templateSlug:string, templateLocale:string|undefined, recipient:EmailRecipient, mergeValues:Record<string, unknown>|undefined, metadata:Record<string,string>|undefined, senderID?:string|undefined) {
+	constructor(templateSlug:string, templateLocale:string|undefined, recipient:EmailRecipient, mergeValues:Record<string, unknown>|undefined, metadata:Record<string,string>|undefined, senderID?:string|undefined, sendDraft?:boolean|undefined) {
 		this.templateSlug = templateSlug;
 		this.templateLocale = templateLocale;
 		this.recipient = recipient;
 		this.mergeValues = mergeValues;
 		this.metadata = metadata;
 		this.senderID = senderID;
+		this.sendDraft = sendDraft;
 
 		if (!(this.recipient instanceof EmailRecipient)) throw new Error("recipient must be an instance of EmailRecipient");
 		if (this.mergeValues != undefined && !(this.mergeValues instanceof Object)) throw new Error("mergeValues must be a simple object");
@@ -203,6 +220,7 @@ export class SmsMessage {
 	mergeValues:Record<string, unknown>|undefined;
 	metadata:Record<string, string>|undefined;
 	senderID:string|undefined;
+	sendDraft:boolean|undefined;
 
 	/**
 	 * The message information for sending an SMS message.
@@ -213,13 +231,14 @@ export class SmsMessage {
 	 * @param {Metadata} metadata
 	 * @param {string|undefined} senderID
 	 */
-	constructor(templateSlug:string, templateLocale:string|undefined, recipient:SmsRecipient, mergeValues:Record<string, unknown>|undefined, metadata:Record<string,string>|undefined, senderID?:string|undefined) {
+	constructor(templateSlug:string, templateLocale:string|undefined, recipient:SmsRecipient, mergeValues:Record<string, unknown>|undefined, metadata:Record<string,string>|undefined, senderID?:string|undefined, sendDraft?:boolean|undefined) {
 		this.templateSlug = templateSlug;
 		this.templateLocale = templateLocale;
 		this.recipient = recipient;
 		this.mergeValues = mergeValues;
 		this.metadata = metadata;
 		this.senderID = senderID;
+		this.sendDraft = sendDraft;
 
 		if (!(this.recipient instanceof SmsRecipient)) throw new Error("recipient must be an instance of SmsRecipient");
 		if (this.mergeValues != undefined && !(this.mergeValues instanceof Object)) throw new Error("mergeValues must be an object");
